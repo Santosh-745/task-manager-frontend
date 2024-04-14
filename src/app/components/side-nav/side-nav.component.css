@@ -1,0 +1,31 @@
+.example-sidenav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 95%;
+    background-color: rgb(66 61 61);
+    color: white;
+    margin: 10px;
+    border-radius: 12px;
+}
+
+a {
+    text-decoration: none;
+    color: white;
+}
+
+a:hover, a:active {
+    color: lightgray;
+}
+
+.nav-caption {
+    display: inline-block;
+    padding-left: 6px;
+}
+
+.nav-list-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}

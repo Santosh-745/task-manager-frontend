@@ -1,0 +1,4 @@
+#create-task-container {
+    display: flex;
+    flex-direction: column;
+}

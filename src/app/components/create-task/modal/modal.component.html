@@ -1,0 +1,49 @@
+<h2 mat-dialog-title>Create Task</h2>
+<mat-dialog-content id="create-task-container">
+    <mat-form-field>
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="data.title">
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Description</mat-label>
+        <textarea matInput [(ngModel)]="data.description"></textarea>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Priority</mat-label>
+        <mat-select matInput [(ngModel)]="data.priority">
+            <mat-option value="Low">Low</mat-option>
+            <mat-option value="Medium">Medium</mat-option>
+            <mat-option value="High">High</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Enter a start date & end date</mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Start date" matInput [(ngModel)]="data.startDate">
+            <input matEndDate placeholder="End date" matInput [(ngModel)]="data.endDate">
+        </mat-date-range-input>
+        <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Status</mat-label>
+        <mat-select matInput [(ngModel)]="data.status">
+            <mat-option value="To-do">To-do</mat-option>
+            <mat-option value="In-progress">In-progress</mat-option>
+            <mat-option value="Done">Done</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Assigned Person</mat-label>
+        <mat-select matInput [(ngModel)]="data.assignedPerson">
+            <mat-option value="Person 1">Person 1</mat-option>
+            <mat-option value="Person 2">Person 2</mat-option>
+            <mat-option value="Person 3">Person 3</mat-option>
+        </mat-select>
+    </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Submit</button>
+</mat-dialog-actions>

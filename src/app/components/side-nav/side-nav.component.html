@@ -1,0 +1,16 @@
+<mat-sidenav 
+    #sidenav mode="side" 
+    opened 
+    class="example-sidenav" 
+    [fixedInViewport]="true"
+    [fixedTopGap]="0" 
+    [fixedBottomGap]="0"
+>
+    <mat-nav-list>
+        <div class="nav-list-container">
+            <a mat-list-item routerLink="/home" (click)="onClick()">
+                <span class="nav-caption">Tasks</span>
+            </a>
+        </div>
+    </mat-nav-list>
+</mat-sidenav>

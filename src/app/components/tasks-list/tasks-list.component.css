@@ -1,0 +1,14 @@
+#create-tssk-btn {
+    display: flex;
+    justify-content: flex-end;
+    margin: 25px 10px 0 0;
+}
+
+#tasks-list-container {
+    width: 88vw;
+    margin-top: 25px;   
+}
+
+table {
+    width: 100%;
+}
