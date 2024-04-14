@@ -15,6 +15,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { Task } from '../../tasks-list/task.model';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { TasksService } from '../../tasks-list/tasks.service';
 
 @Component({
   selector: 'app-modal',
@@ -39,7 +40,15 @@ export class ModalComponent {
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: Task,
-  ) { }
+    private tasksService: TasksService,
+  ) {}
+
+  ngOnInit() {
+    this.tasksService.newTask
+      .subscribe((task: Task) => {
+        this.data = task;
+      })
+  }
 
   onCancel(): void {
     this.dialogRef.close();

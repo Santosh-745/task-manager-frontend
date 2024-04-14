@@ -20,15 +20,7 @@ export class CreateTaskComponent {
     public dialog: MatDialog,
     private tasksService: TasksService,
   ) {}
-  task: Task = {
-    title: "",
-    description: "",
-    priority: "",
-    startDate: "",
-    endDate: "",
-    status: "",
-    assignedPerson: "",
-  };
+  task: Task = this.tasksService.defaultTask;
 
   openDialog(): void {
     const dialogRef = this.dialog.open(ModalComponent, {
@@ -36,9 +28,11 @@ export class CreateTaskComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed' ,result);
-      this.tasksService.addTask(result);
-      this.tasksService.tasksChanged.next(this.tasksService.getTasks());
+      console.log('The dialog was closed', result);
+      if (result) {
+        this.tasksService.addTask(result);
+      }
+      this.tasksService.newTask.next(this.tasksService.defaultTask);
     });
   }
 
