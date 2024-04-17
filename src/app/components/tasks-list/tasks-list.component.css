@@ -1,11 +1,11 @@
-#create-tssk-btn {
+#create-task-btn {
     display: flex;
     justify-content: flex-end;
     margin: 25px 10px 0 0;
 }
 
 #tasks-list-container {
-    width: 88vw;
+    width: 84vw;
     margin-top: 25px;   
 }
 
