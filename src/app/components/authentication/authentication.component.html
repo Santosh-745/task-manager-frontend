@@ -1,0 +1,29 @@
+<!-- <div class="alert alert-danger" *ngIf="error">
+        {{ error }}
+      </div> -->
+<div id="login-form">
+    <form #authForm="ngForm" (ngSubmit)="onSubmit(authForm)">
+        <div id="input-container">
+            <mat-form-field>
+                <mat-label>Email id</mat-label>
+                <input matInput>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+        </div>
+        <div id="buttons-container">
+            <button type="submit" mat-flat-button color="primary" [disabled]="!authForm.valid">
+                {{ isLoginMode ? 'Login' : 'Sign up' }}
+            </button> <span style="font-size: 35px; line-height: 31px;"> | </span>
+            <button mat-flat-button type="button" color="primary" (click)="onSwitchMode()">
+                Switch to {{ isLoginMode ? 'Sign up' : 'Login' }}
+            </button>
+        </div>
+    </form>
+</div>

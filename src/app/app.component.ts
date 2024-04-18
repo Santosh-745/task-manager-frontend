@@ -2,18 +2,22 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
+import { HttpClientModule } from '@angular/common/http';
+import { AuthenticationService } from './components/authentication/authentication.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
+    HttpClientModule,
     RouterOutlet, 
     SideNavComponent,
-    TasksListComponent
+    TasksListComponent,
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
 export class AppComponent {
   title = 'task-manager-angular';
+  constructor(private authService: AuthenticationService) {}
 }
