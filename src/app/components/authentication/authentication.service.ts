@@ -77,6 +77,7 @@ export class AuthenticationService {
       clearTimeout(this.tokenExpirationTimer);
     }
     this.tokenExpirationTimer = null;
+    this.router.navigate(['/auth']);
   }
 
   autoLogin() {

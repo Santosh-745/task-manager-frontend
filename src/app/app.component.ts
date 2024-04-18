@@ -4,6 +4,7 @@ import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AuthenticationService } from './components/authentication/authentication.service';
+import { map } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -19,5 +20,15 @@ import { AuthenticationService } from './components/authentication/authenticatio
 })
 export class AppComponent {
   title = 'task-manager-angular';
+  isAuth: boolean = false;
   constructor(private authService: AuthenticationService) {}
+
+  ngOnInit() {
+    this.authService.user.pipe(
+      map((user) => {
+          this.isAuth = !!user;
+      })
+    )
+  }
+
 }
