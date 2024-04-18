@@ -9,3 +9,8 @@ export interface Task {
     isEditingStatus?: boolean;
     isEditingpriority?: boolean;
 }
+
+export interface Tasks {
+    message: string;
+    tasks: Task[];
+}

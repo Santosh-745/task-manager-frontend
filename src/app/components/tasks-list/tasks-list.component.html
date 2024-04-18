@@ -45,7 +45,7 @@
         
         <ng-container matColumnDef="assignedPerson">
             <th mat-header-cell *matHeaderCellDef> Assigned Person </th>
-            <td mat-cell *matCellDef="let element"> {{element.assignedPerson}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.users[0].email}} </td>
         </ng-container>
 
         <ng-container matColumnDef="actionsColumn">

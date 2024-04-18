@@ -56,7 +56,9 @@ export class TasksListComponent {
         this.dataSource = new MatTableDataSource<Task>(this.tasks);
         this.dataSource.paginator = this.paginator;
       })
-    this.tasks = this.tasksService.getTasks();
+    this.tasksService.getTasks().subscribe(result => {
+      this.tasks = result.tasks;
+    });
     this.dataSource = new MatTableDataSource<Task>(this.tasks);
   }
 
