@@ -36,11 +36,11 @@ export class TasksService {
 
 
   getTasks(): Observable<Tasks> {
-    return this.http.get<Tasks>('http://localhost:3000/tasks');
+    return this.http.get<Tasks>('http://localhost:3000/task/fetch-all');
   }
   
   addTask(task: Task) {
-    return this.http.post<Task>('http://localhost:3000/task', task)
+    return this.http.post<Task>('http://localhost:3000/task/create', task)
     .pipe(
       catchError(this.handleError)
     );
@@ -63,6 +63,6 @@ export class TasksService {
   };
 
   getUsers(){
-    return this.http.get<any>('http://localhost:3000/users');
+    return this.http.get<any>('http://localhost:3000/auth/users');
   }
 }
