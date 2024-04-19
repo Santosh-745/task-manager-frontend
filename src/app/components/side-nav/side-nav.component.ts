@@ -37,7 +37,6 @@ export class SideNavComponent {
   onClickTasks = () => {
     this.isClickedTasks = true;
     this.isClickedLogout = false;
-    console.log(this.isClickedTasks);
   };
 
   onLogout = () => {

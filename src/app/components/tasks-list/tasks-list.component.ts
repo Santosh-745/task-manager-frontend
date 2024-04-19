@@ -53,7 +53,6 @@ export class TasksListComponent {
 
   ngOnInit(): void {
     this.tasksService.getTasks().subscribe(result => {
-      console.log(result);
       this.tasks = result.tasks;
       this.dataSource = new MatTableDataSource<Task>(this.tasks);
       this.dataSource.paginator = this.paginator;
@@ -66,12 +65,8 @@ export class TasksListComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed after edit', result);
       if (result) {
-        this.tasksService.editTask(result, index).subscribe(result => {
-          console.log('The task has updated');
-          
-        });
+        this.tasksService.editTask(result, index).subscribe(() => {});
       }
       this.tasksService.newTask.next(this.tasksService.defaultTask)
     });
@@ -83,9 +78,7 @@ export class TasksListComponent {
   }
 
   onDelete(index: number) {
-    this.tasksService.deleteTask(index).subscribe(result => {
-      console.log('task deleted!!!');
-    });
+    this.tasksService.deleteTask(index).subscribe(() => {});
     
     
   }

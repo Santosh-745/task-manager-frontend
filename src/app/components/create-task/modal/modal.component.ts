@@ -48,7 +48,6 @@ export class ModalComponent {
 
   ngOnInit() {
     this.users = this.tasksService.getUsers().subscribe(data => {
-      console.log(data);
       this.users = data.users;
     });
     

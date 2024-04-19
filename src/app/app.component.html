@@ -1,3 +1,6 @@
 <div id="main-container">
-    <router-outlet id="router-outlet"></router-outlet>
+    <div *ngIf="isAuth">
+        <app-side-nav></app-side-nav>
+    </div>
+    <router-outlet></router-outlet>
 </div>
