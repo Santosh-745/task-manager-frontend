@@ -1,0 +1,15 @@
+#project-list-table {
+    width: 86vw;
+    margin-top: 25px;
+    height: fit-content;
+}
+
+#create-project-btn {
+    display: flex;
+    justify-content: flex-end;
+    margin: 25px 10px 0 0;
+}
+
+#project-list-container {
+    display: flex;
+}

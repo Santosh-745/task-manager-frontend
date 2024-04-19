@@ -6,8 +6,6 @@ export interface Task {
     endDate?: Date;
     status: string;
     assignedPerson: string;
-    isEditingStatus?: boolean;
-    isEditingpriority?: boolean;
 }
 
 export interface Tasks {

@@ -24,6 +24,9 @@ a:hover, a:active {
     display: flex;
     justify-content: center;
     cursor: pointer;
+    height: 50px;
+    align-items: center;
+    border-radius: 16px;
 }
 
 .nav-caption {

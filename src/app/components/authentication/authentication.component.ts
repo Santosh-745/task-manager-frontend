@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
+import { SidenavService } from '../../services/sidenav.service';
 
 interface jwtPayload {
   id: number,
@@ -41,6 +42,7 @@ export class AuthenticationComponent {
   constructor(
     private router: Router,
     private authService: AuthenticationService,
+    private sidenavService: SidenavService,
   ) {}
 
   onSwitchMode() {
@@ -64,7 +66,8 @@ export class AuthenticationComponent {
           resData.accessToken,
           +data.exp
         );
-        this.router.navigate(['/tasks-list']);
+        this.router.navigate(['/projects-list']);
+        this.sidenavService.isClickedProjects.next(true);
         form.reset();
       },
       error: (errorMsg) => {

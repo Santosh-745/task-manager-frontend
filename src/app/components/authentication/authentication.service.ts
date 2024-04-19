@@ -5,6 +5,7 @@ import { User } from './user.model';
 import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { NgForm } from '@angular/forms';
+import { SidenavService } from '../../services/sidenav.service';
 
 export interface AuthResponseData {
   message: string,
@@ -19,7 +20,11 @@ export class AuthenticationService {
   user = new BehaviorSubject<User | null>(null);
   private tokenExpirationTimer: any;
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private sidenavService: SidenavService,
+  ) {}
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -62,7 +67,8 @@ export class AuthenticationService {
       );
       if (loadedUser.token) {
         this.user.next(loadedUser);
-        this.router.navigate(['/tasks-list']);
+        this.router.navigate(['/projects-list']);
+        this.sidenavService.isClickedProjects.next(true);
         const expirationDuration =
           new Date(userData._tokenExpirationDate).getTime() -
           new Date().getTime();

@@ -6,7 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ModalComponent } from './modal/modal.component';
 import { Task } from '../tasks-list/task.model';
-import { TasksService } from '../tasks-list/tasks.service';
+import { TasksService } from '../services/tasks.service';
 
 @Component({
   selector: 'app-create-task',
@@ -23,15 +23,24 @@ export class CreateTaskComponent {
   task: Task = this.tasksService.defaultTask;
 
   openDialog(): void {
+    this.tasksService.newTask.next({
+      title: "",
+      description: "",
+      priority: "",
+      startDate: undefined,
+      endDate: undefined,
+      status: "",
+      assignedPerson: "",
+    });
+    
     const dialogRef = this.dialog.open(ModalComponent, {
-      data: {title: this.task.title},
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.tasksService.addTask(result).subscribe(() => {});
+        this.tasksService.addTask(result);
       }
-      this.tasksService.newTask.next(this.tasksService.defaultTask);
     });
   }
 

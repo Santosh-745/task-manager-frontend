@@ -1,9 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 import { Task } from './task.model';
-import { TasksService } from './tasks.service';
+import { TasksService } from '../services/tasks.service';
 import { CreateTaskComponent } from '../create-task/create-task.component';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
@@ -52,11 +52,12 @@ export class TasksListComponent {
   }
 
   ngOnInit(): void {
-    this.tasksService.getTasks().subscribe(result => {
-      this.tasks = result.tasks;
+    this.tasksService.tasksChanged.subscribe(result => {
+      this.tasks = result;
       this.dataSource = new MatTableDataSource<Task>(this.tasks);
       this.dataSource.paginator = this.paginator;
-    });
+    })
+    this.tasksService.getTasks();
   }
 
   openDialog(data: Task, index: number): void {
@@ -66,9 +67,8 @@ export class TasksListComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.tasksService.editTask(result, index).subscribe(() => {});
+        this.tasksService.editTask(result, index);
       }
-      this.tasksService.newTask.next(this.tasksService.defaultTask)
     });
   }
 
@@ -78,8 +78,6 @@ export class TasksListComponent {
   }
 
   onDelete(index: number) {
-    this.tasksService.deleteTask(index).subscribe(() => {});
-    
-    
+    this.tasksService.deleteTask(index);
   }
 }

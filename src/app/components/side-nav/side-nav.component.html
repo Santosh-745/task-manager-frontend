@@ -2,12 +2,28 @@
     [fixedBottomGap]="0">
     <mat-nav-list *ngIf="isAuth">
         <div class="nav-list-container">
-            <div mat-list-item class="nav-item" [style.background-color]="isClickedTasks ? 'gray' : 'initial'"
-                (click)="onClickTasks()">
+            <div 
+                mat-list-item 
+                class="nav-item" 
+                [style.background-color]="isClickedProjects ? 'gray' : 'initial'"
+                (click)="onClickProjects()"
+            >
+                <span class="nav-caption">Projects</span>
+            </div>
+            <div 
+                mat-list-item 
+                class="nav-item" 
+                [style.background-color]="isClickedTasks ? 'gray' : 'initial'"
+                (click)="onClickTasks()"
+            >
                 <span class="nav-caption">Tasks</span>
             </div>
-            <div mat-list-item class="nav-item" [style.background-color]="isClickedLogout ? 'gray' : 'initial'"
-                (click)="onLogout()">
+            <div 
+                mat-list-item 
+                class="nav-item" 
+                [style.background-color]="isClickedLogout ? 'gray' : 'initial'"
+                (click)="onLogout()"
+            >
                 <span class="nav-caption">Logout</span>
             </div>
         </div>
