@@ -36,7 +36,9 @@ export class TasksService {
 
 
   getTasks(): Observable<Tasks> {
-    return this.http.get<Tasks>('http://localhost:3000/task/fetch-all');
+    return this.http.get<Tasks>('http://localhost:3000/task/fetch-all').pipe(
+      catchError(this.handleError)
+    );
   }
   
   addTask(task: Task) {
@@ -45,13 +47,22 @@ export class TasksService {
       catchError(this.handleError)
     );
   }
-
+  
   editTask(task: Task, index: number) {
+    return this.http.patch<Task>('http://localhost:3000/task/update', task)
+    .pipe(
+      catchError(this.handleError)
+    );
+    
     // this.tasks[index] = task;
     // this.tasksChanged.next(this.tasks.slice());
   }
-
+  
   deleteTask(index: number) {
+    return this.http.delete('http://localhost:3000/task/delete/'+index)
+    .pipe(
+      catchError(this.handleError)
+    );
     // this.tasks.splice(index, 1);
     // this.tasksChanged.next(this.tasks.slice());
   }

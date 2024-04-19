@@ -70,7 +70,10 @@ export class TasksListComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed after edit', result);
       if (result) {
-        this.tasksService.editTask(result, index);
+        this.tasksService.editTask(result, index).subscribe(result => {
+          console.log('The task has updated');
+          
+        });
       }
       this.tasksService.newTask.next(this.tasksService.defaultTask)
     });
@@ -82,6 +85,10 @@ export class TasksListComponent {
   }
 
   onDelete(index: number) {
-    this.tasksService.deleteTask(index);
+    this.tasksService.deleteTask(index).subscribe(result => {
+      console.log('task deleted!!!');
+    });
+    
+    
   }
 }
