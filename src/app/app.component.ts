@@ -22,13 +22,10 @@ import { CommonModule } from '@angular/common';
 export class AppComponent {
   title = 'task-manager-angular';
   isAuth: boolean = false;
-  constructor(private authService: AuthenticationService) {
-    afterRender(() => {
-      this.authService.autoLogin()
-    })
-  }
-
+  constructor(private authService: AuthenticationService) {}
+  
   ngOnInit() {
+    this.authService.autoLogin()
     this.authService.user.subscribe((user) => {
       this.isAuth = !!user;
     })

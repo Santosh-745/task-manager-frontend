@@ -1,0 +1,28 @@
+<mat-dialog-content id="create-project-container">
+    <!-- <div id="input-fields"> -->
+        <h2 mat-dialog-title id="modal-title">Create Project</h2>
+        <mat-form-field>
+            <mat-label>Title</mat-label>
+            <input matInput [(ngModel)]="data.title">
+        </mat-form-field>
+        <div id="date-container">
+            <mat-form-field>
+                <mat-label>Start date</mat-label>
+                <input matInput [matDatepicker]="startDatePicker" [(ngModel)]="data.startDate">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="startDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #startDatePicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>End date</mat-label>
+                <input matInput [matDatepicker]="endDatePicker" [(ngModel)]="data.endDate">
+                <mat-hint>MM/DD/YYYY</mat-hint>
+                <mat-datepicker-toggle matIconSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+            </mat-form-field>
+        </div>
+    <!-- </div> -->
+<mat-dialog-actions id="buttons-container">
+    <button mat-button (click)="onCancel()">Cancel</button>
+    <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Submit</button>
+</mat-dialog-actions>

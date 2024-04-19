@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
-import { Task , Tasks } from './task.model';
+import { Task , Tasks } from '../tasks-list/task.model';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 
@@ -23,6 +23,7 @@ export class TasksService {
     status: "",
     assignedPerson: "",
   };
+  tasks: Task[] = [];
   tasksChanged = new BehaviorSubject<Task[]>([]);
   newTask = new BehaviorSubject<Task>(this.defaultTask);
   editTaskIndex = new BehaviorSubject<number>(-1);
@@ -34,33 +35,40 @@ export class TasksService {
   };
 
 
-  getTasks(): Observable<Tasks> {
-    return this.http.get<Tasks>('http://localhost:3000/task/fetch-all').pipe(
-      catchError(this.handleError)
-    );
+  getTasks() {
+    this.http.get<Tasks>('http://localhost:3000/task/fetch-all')
+      .pipe(catchError(this.handleError))
+      .subscribe(result => {
+        this.tasksChanged.next(result.tasks);
+      });
   }
   
   addTask(task: Task) {
-    return this.http.post<Task>('http://localhost:3000/task/create', task, this.httpOptions)
-    .pipe(
-      catchError(this.handleError)
-    );
+    this.http.post<Task>('http://localhost:3000/task/create', task, this.httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      ).subscribe(() => {
+        this.getTasks();
+      });
   }
   
   editTask(task: Task, index: number) {
-    return this.http.patch<Task>('http://localhost:3000/task/update', task, this.httpOptions)
-    .pipe(
-      catchError(this.handleError)
-    );
+    this.http.patch<Task>('http://localhost:3000/task/update', task, this.httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      ).subscribe(() => {
+        this.getTasks();
+      });
   }
   
   deleteTask(index: number) {
-    return this.http.delete('http://localhost:3000/task/delete/'+index)
-    .pipe(
-      catchError(this.handleError)
-    );
+    this.http.delete('http://localhost:3000/task/delete/'+index)
+      .pipe(
+        catchError(this.handleError)
+      ).subscribe(() => {
+        this.getTasks();
+      });
   }
-
 
   getUsers(){
     return this.http.get<any>('http://localhost:3000/auth/users');
