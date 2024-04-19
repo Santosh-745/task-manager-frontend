@@ -32,7 +32,12 @@ export class TasksService {
   tasksChanged = new BehaviorSubject<Task[]>([]);
   newTask = new BehaviorSubject<Task>(this.defaultTask);
   editTaskIndex = new BehaviorSubject<number>(-1);
-
+  
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
 
 
   getTasks(): Observable<Tasks> {
@@ -42,20 +47,17 @@ export class TasksService {
   }
   
   addTask(task: Task) {
-    return this.http.post<Task>('http://localhost:3000/task/create', task)
+    return this.http.post<Task>('http://localhost:3000/task/create', task, this.httpOptions)
     .pipe(
       catchError(this.handleError)
     );
   }
   
   editTask(task: Task, index: number) {
-    return this.http.patch<Task>('http://localhost:3000/task/update', task)
+    return this.http.patch<Task>('http://localhost:3000/task/update', task, this.httpOptions)
     .pipe(
       catchError(this.handleError)
     );
-    
-    // this.tasks[index] = task;
-    // this.tasksChanged.next(this.tasks.slice());
   }
   
   deleteTask(index: number) {
@@ -63,15 +65,8 @@ export class TasksService {
     .pipe(
       catchError(this.handleError)
     );
-    // this.tasks.splice(index, 1);
-    // this.tasksChanged.next(this.tasks.slice());
   }
 
-  httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json'
-    })
-  };
 
   getUsers(){
     return this.http.get<any>('http://localhost:3000/auth/users');
