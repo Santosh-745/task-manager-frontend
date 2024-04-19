@@ -1,4 +1,4 @@
-.example-sidenav {
+.sidenav {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -19,6 +19,13 @@ a:hover, a:active {
     color: lightgray;
 }
 
+.nav-item {
+    width: 180px;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+}
+
 .nav-caption {
     display: inline-block;
     padding-left: 6px;
@@ -27,5 +34,9 @@ a:hover, a:active {
 .nav-list-container {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 200px;
+    height: 87vh;
+    align-items: center;
+    gap: 15px;
 }
