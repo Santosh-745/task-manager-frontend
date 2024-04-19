@@ -56,7 +56,9 @@ export class TasksListComponent {
         this.dataSource = new MatTableDataSource<Task>(this.tasks);
         this.dataSource.paginator = this.paginator;
       })
-    this.tasks = this.tasksService.getTasks();
+    this.tasksService.getTasks().subscribe(result => {
+      this.tasks = result.tasks;
+    });
     this.dataSource = new MatTableDataSource<Task>(this.tasks);
   }
 
@@ -68,7 +70,10 @@ export class TasksListComponent {
     dialogRef.afterClosed().subscribe(result => {
       console.log('The dialog was closed after edit', result);
       if (result) {
-        this.tasksService.editTask(result, index);
+        this.tasksService.editTask(result, index).subscribe(result => {
+          console.log('The task has updated');
+          
+        });
       }
       this.tasksService.newTask.next(this.tasksService.defaultTask)
     });
@@ -80,6 +85,10 @@ export class TasksListComponent {
   }
 
   onDelete(index: number) {
-    this.tasksService.deleteTask(index);
+    this.tasksService.deleteTask(index).subscribe(result => {
+      console.log('task deleted!!!');
+    });
+    
+    
   }
 }

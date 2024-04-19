@@ -36,10 +36,8 @@
     </mat-form-field>
     <mat-form-field>
         <mat-label>Assigned Person</mat-label>
-        <mat-select matInput [(ngModel)]="data.assignedPerson">
-            <mat-option value="Person 1">Person 1</mat-option>
-            <mat-option value="Person 2">Person 2</mat-option>
-            <mat-option value="Person 3">Person 3</mat-option>
+        <mat-select matInput [(ngModel)]="data.assignedPerson" multiple>
+            <mat-option *ngFor="let user of users" [value]="user.id">{{ user.email }}</mat-option>
         </mat-select>
     </mat-form-field>
 <mat-dialog-actions>
