@@ -2,8 +2,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
-    width: 88vw;
+    height: 100vh;
+    width: 100vw;
 
     #input-container {
         display: flex;

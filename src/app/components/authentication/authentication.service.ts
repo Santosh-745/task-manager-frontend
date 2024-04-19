@@ -2,20 +2,14 @@ import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable, catchError, tap, throwError } from 'rxjs';
 import { User } from './user.model';
-import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { NgForm } from '@angular/forms';
 
 export interface AuthResponseData {
   message: string,
   statusCode: number,
   accessToken: string,
-}
-
-interface jwtPayload {
-  id: number,
-  email: string,
-  exp: number,
-  iat: number,
 }
 
 @Injectable({
@@ -25,47 +19,24 @@ export class AuthenticationService {
   user = new BehaviorSubject<User | null>(null);
   private tokenExpirationTimer: any;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private http: HttpClient) {}
 
-  login(email: string, password: string) {
-    return new Observable<AuthResponseData>((observer) => {
-      observer.next({
-        message: "Loggedin",
-        statusCode: 200,
-        accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJkaXBAZ2FtaWwuY29tIiwiaWQiOjEyMywiZXhwIjoxNzE2MDQ2MjAwLCJpYXQiOjE3MTM0NTQyMDB9.8Hn9lgLuNH6go3qlh3_8x8XzaCFjmulOwoxQWe459oY"
-      })
-    }).pipe(
-      catchError(this.handleError),
-      tap((resData) => {
-        const data = jwtDecode<jwtPayload>(resData.accessToken);
-        this.handleAuthentication(
-          data.email,
-          data.id.toString(),
-          resData.accessToken,
-          +data.exp
-        );
-      })
+  httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type': 'application/json'
+    })
+  };
+  
+
+  login(form: NgForm) {
+    return this.http.post<AuthResponseData>("http://localhost:3000/auth/login", form, this.httpOptions).pipe(
+      catchError(this.handleError)
     );
   }
 
-  signup(email: string, password: string) {
-    return new Observable<AuthResponseData>((observer) => {
-      observer.next({
-        message: "Loggedin",
-        statusCode: 200,
-        accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJkaXBAZ2FtaWwuY29tIiwiaWQiOjEyMywiZXhwIjoxNzE2MDQ2MjAwLCJpYXQiOjE3MTM0NTQyMDB9.8Hn9lgLuNH6go3qlh3_8x8XzaCFjmulOwoxQWe459oY"
-      })
-    }).pipe(
-      catchError(this.handleError),
-      tap((resData) => {
-        const data = jwtDecode<jwtPayload>(resData.accessToken);
-        this.handleAuthentication(
-          data.email,
-          data.id.toString(),
-          resData.accessToken,
-          +data.exp
-        );
-      })
+  signup(form: NgForm) {
+    return this.http.post<AuthResponseData>("http://localhost:3000/auth/signup", form, this.httpOptions).pipe(
+      catchError(this.handleError)
     );
   }
 

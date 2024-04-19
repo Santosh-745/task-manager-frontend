@@ -9,6 +9,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { Observable } from 'rxjs';
+import { jwtDecode } from 'jwt-decode';
+
+interface jwtPayload {
+  id: number,
+  email: string,
+  exp: number,
+  iat: number,
+}
 
 @Component({
   selector: 'app-authentication',
@@ -41,19 +49,27 @@ export class AuthenticationComponent {
 
   onSubmit(form: NgForm) {
     const { email, password } = form.value;
+    console.log(form);
     let authObs: Observable<AuthResponseData>;
     if (this.isLoginMode) {
-      authObs = this.authService.login(email, password);
+      authObs = this.authService.login(form.value);
     } else {
-      authObs = this.authService.signup(email, password);
+      authObs = this.authService.signup(form.value);
     }
     authObs.subscribe({
       next: (resData) => {
         console.log("====> resData", resData);
+        const data = jwtDecode<jwtPayload>(resData.accessToken);
+        this.authService.handleAuthentication(
+          data.email,
+          data.id.toString(),
+          resData.accessToken,
+          +data.exp
+        );
         this.router.navigate(['/tasks-list']);
       },
       error: (errorMsg) => {
-        console.log(errorMsg);
+        console.log("from error message ::", errorMsg);
         this.error = errorMsg;
       },
     });

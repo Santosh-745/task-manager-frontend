@@ -8,11 +8,13 @@ import { CreateTaskComponent } from '../create-task/create-task.component';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../create-task/modal/modal.component';
+import { SideNavComponent } from '../side-nav/side-nav.component';
 
 @Component({
   selector: 'app-tasks-list',
   standalone: true,
   imports: [
+    SideNavComponent,
     MatTableModule, 
     MatPaginatorModule,
     CreateTaskComponent,
