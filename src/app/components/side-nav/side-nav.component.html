@@ -1,16 +1,15 @@
-<mat-sidenav 
-    #sidenav mode="side" 
-    opened 
-    class="example-sidenav" 
-    [fixedInViewport]="true"
-    [fixedTopGap]="0" 
-    [fixedBottomGap]="0"
->
-    <mat-nav-list>
+<mat-sidenav #sidenav mode="side" opened class="sidenav" [fixedInViewport]="true" [fixedTopGap]="0"
+    [fixedBottomGap]="0">
+    <mat-nav-list *ngIf="isAuth">
         <div class="nav-list-container">
-            <a mat-list-item routerLink="/home" (click)="onClick()">
+            <div mat-list-item class="nav-item" [style.background-color]="isClickedTasks ? 'gray' : 'initial'"
+                (click)="onClickTasks()">
                 <span class="nav-caption">Tasks</span>
-            </a>
+            </div>
+            <div mat-list-item class="nav-item" [style.background-color]="isClickedLogout ? 'gray' : 'initial'"
+                (click)="onLogout()">
+                <span class="nav-caption">Logout</span>
+            </div>
         </div>
     </mat-nav-list>
 </mat-sidenav>

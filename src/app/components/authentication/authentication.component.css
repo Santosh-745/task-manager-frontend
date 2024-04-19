@@ -1,0 +1,22 @@
+#login-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 88vw;
+
+    #input-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    form {
+        width: 380px;
+    }
+
+    #buttons-container {
+        display: flex;
+        justify-content: flex-start;
+        gap: 5px;
+    }
+}
