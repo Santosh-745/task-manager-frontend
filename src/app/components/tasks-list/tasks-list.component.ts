@@ -52,16 +52,12 @@ export class TasksListComponent {
   }
 
   ngOnInit(): void {
-    this.tasksService.tasksChanged
-      .subscribe((tasks: Task[]) => {
-        this.tasks = tasks;
-        this.dataSource = new MatTableDataSource<Task>(this.tasks);
-        this.dataSource.paginator = this.paginator;
-      })
     this.tasksService.getTasks().subscribe(result => {
+      console.log(result);
       this.tasks = result.tasks;
+      this.dataSource = new MatTableDataSource<Task>(this.tasks);
+      this.dataSource.paginator = this.paginator;
     });
-    this.dataSource = new MatTableDataSource<Task>(this.tasks);
   }
 
   openDialog(data: Task, index: number): void {
