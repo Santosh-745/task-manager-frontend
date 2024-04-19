@@ -28,11 +28,8 @@ export class CreateTaskComponent {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed', result);
       if (result) {
-        this.tasksService.addTask(result).subscribe(result => {
-          console.log('from creat-task component ::',result);
-        });
+        this.tasksService.addTask(result).subscribe(() => {});
       }
       this.tasksService.newTask.next(this.tasksService.defaultTask);
     });

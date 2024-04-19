@@ -62,6 +62,7 @@ export class AuthenticationService {
       );
       if (loadedUser.token) {
         this.user.next(loadedUser);
+        this.router.navigate(['/tasks-list']);
         const expirationDuration =
           new Date(userData._tokenExpirationDate).getTime() -
           new Date().getTime();
@@ -70,7 +71,6 @@ export class AuthenticationService {
   }
 
   autoLogout(expirationDuration: number) {
-    console.log("exp: ", expirationDuration);
     this.tokenExpirationTimer = setTimeout(() => {
       this.logout();
       this.router.navigate(['/auth']);  
@@ -91,18 +91,11 @@ export class AuthenticationService {
 
   handleError(errorRes: HttpErrorResponse) {
     let errorMsg = 'Unknown Error Occured!';
-    if (!errorRes.error || !errorRes.error.error) {
-      return throwError(() => new Error(errorMsg));
-    }
-    switch (errorRes.error.error.message) {
-      case 'EMAIL_EXISTS':
-        errorMsg = 'This Email Already Exists';
+    switch (errorRes.status) {
+      case 403:
+        errorMsg = 'Invalid Authentication';
         break;
-      case 'EMAIL_NOT_FOUND':
-        errorMsg = 'Email not found';
-        break;
-      case 'INVALID_PASSWORD':
-        errorMsg = 'This password is incorrect';
+      default:
         break;
     }
     return throwError(() => new Error(errorMsg));

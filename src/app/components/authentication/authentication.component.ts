@@ -49,7 +49,6 @@ export class AuthenticationComponent {
 
   onSubmit(form: NgForm) {
     const { email, password } = form.value;
-    console.log(form);
     let authObs: Observable<AuthResponseData>;
     if (this.isLoginMode) {
       authObs = this.authService.login(form.value);
@@ -58,7 +57,6 @@ export class AuthenticationComponent {
     }
     authObs.subscribe({
       next: (resData) => {
-        console.log("====> resData", resData);
         const data = jwtDecode<jwtPayload>(resData.accessToken);
         this.authService.handleAuthentication(
           data.email,
@@ -67,12 +65,11 @@ export class AuthenticationComponent {
           +data.exp
         );
         this.router.navigate(['/tasks-list']);
+        form.reset();
       },
       error: (errorMsg) => {
-        console.log("from error message ::", errorMsg);
         this.error = errorMsg;
       },
     });
-    form.reset();
   }
 }
