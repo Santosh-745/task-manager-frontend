@@ -46,7 +46,8 @@ export class SideNavComponent {
     this.authService.user.subscribe(
       (user) => {
         this.isAuth = !!user;
-        this.userEmail = ((user?.email  as string)?.length > 20 ? user?.email?.slice(0, 20) + '...' : this.userEmail);
+        const email = user?.email as string;
+        this.userEmail = (email?.length > 20 ? user?.email?.slice(0, 20) + '...' : email);
       }
     )
   }
