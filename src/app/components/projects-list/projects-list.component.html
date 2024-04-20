@@ -1,7 +1,10 @@
-<div id='create-project-btn'>
+<div id='project-list-header-container'>
+    <mat-toolbar-row>
+        <span id="project-list-heading">Projects</span>
+    </mat-toolbar-row>
     <app-create-project></app-create-project>
 </div>
-<div id="project-list-table" class="mat-elevation-z8">
+<div id="project-list-table" class="mat-elevation-z8" style="display: flex; justify-content: space-between;">
     <table mat-table [dataSource]="dataSource">
 
         <!-- Position Column -->

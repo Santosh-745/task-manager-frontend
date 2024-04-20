@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CreateProjectComponent } from '../create-project/create-project.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../create-project/create-project-modal/create-project-modal.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-projects-list',
@@ -20,6 +21,7 @@ import { ModalComponent } from '../create-project/create-project-modal/create-pr
     CommonModule,
     MatButtonModule,
     CreateProjectComponent,
+    MatToolbarModule
   ],
   templateUrl: './projects-list.component.html',
   styleUrl: './projects-list.component.css'

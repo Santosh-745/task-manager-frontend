@@ -1,7 +1,8 @@
-#create-task-btn {
+#task-list-header-container {
     display: flex;
-    justify-content: flex-end;
-    margin: 25px 10px 0 0;
+    justify-content: space-between;
+    margin: 41px 10px 0 0;
+    align-items: center;
 }
 
 #tasks-list-container {
@@ -11,4 +12,9 @@
 
 table {
     width: 100%;
+}
+
+#task-list-heading {
+    margin: 0 0 0 25px; 
+    font-size: xx-large;
 }

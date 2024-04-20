@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Project } from '../projects-list/project.model';
-import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
+import { AuthenticationService } from '../authentication/authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectsService {
 
-  constructor() { }
+  constructor(
+    private authService: AuthenticationService
+  ) { }
   projectsChanged = new BehaviorSubject<Project[]>([]);
   public defaultProject: Project = {
     title: "",
@@ -49,7 +52,8 @@ export class ProjectsService {
     }).pipe(
       catchError(this.handleError)
     ).subscribe((project) => {
-      this.projects.push(project);
+      const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');      
+      this.projects.push({ ...project, owner: userDetails.email });
       this.getProjects();
     })
   }
