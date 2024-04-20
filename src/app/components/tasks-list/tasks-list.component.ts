@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../create-task/modal/modal.component';
 import { SideNavComponent } from '../side-nav/side-nav.component';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-tasks-list',
@@ -20,6 +21,7 @@ import { SideNavComponent } from '../side-nav/side-nav.component';
     CreateTaskComponent,
     CommonModule,
     MatButtonModule,
+    MatToolbarModule
   ],
   templateUrl: './tasks-list.component.html',
   styleUrl: './tasks-list.component.css'

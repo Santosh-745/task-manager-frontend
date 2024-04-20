@@ -2,8 +2,20 @@
     display: flex;
     flex-direction: column;
     width: 50vw;
+    height: 100%;
 }
 
 #modal-title {
     padding-left: 0;
+}
+
+#date-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 50px;
+    margin-bottom: 15px;
+}
+
+.date-field {
+    width: 350px;
 }
