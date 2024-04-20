@@ -43,3 +43,9 @@ a:hover, a:active {
     align-items: center;
     gap: 15px;
 }
+
+#user-email {
+    height: 59%;
+    width: 135px;
+    overflow-wrap: break-word;
+}
