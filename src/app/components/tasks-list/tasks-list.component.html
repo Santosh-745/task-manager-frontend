@@ -47,8 +47,14 @@
         </ng-container>
 
         <ng-container matColumnDef="assignedPerson">
-            <th mat-header-cell *matHeaderCellDef> Assigned Person </th>
-            <td mat-cell *matCellDef="let element"> {{element.users[0].email}} </td>
+            <th mat-header-cell *matHeaderCellDef> Assigned Users </th>
+            <td mat-cell *matCellDef="let element">
+                <mat-chip-set>
+                    @for (userEmail of element.userEmails; track userEmail) {
+                        <mat-chip>{{userEmail}}</mat-chip>
+                    }
+                </mat-chip-set>
+            </td>
         </ng-container>
 
         <ng-container matColumnDef="actionsColumn">

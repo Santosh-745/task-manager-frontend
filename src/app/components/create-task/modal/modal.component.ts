@@ -53,7 +53,10 @@ export class ModalComponent {
     
     this.tasksService.newTask
       .subscribe((task: Task) => {
-        this.data = task;
+        this.data = {
+          ...task,
+          assignedPerson: task?.users?.map(user => user?.id) as number[]
+        };
       })
   }
 

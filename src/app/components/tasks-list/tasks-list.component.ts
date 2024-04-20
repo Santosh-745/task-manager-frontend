@@ -10,31 +10,33 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../create-task/modal/modal.component';
 import { SideNavComponent } from '../side-nav/side-nav.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatChipsModule } from '@angular/material/chips';
 
 @Component({
   selector: 'app-tasks-list',
   standalone: true,
   imports: [
     SideNavComponent,
-    MatTableModule, 
+    MatTableModule,
     MatPaginatorModule,
     CreateTaskComponent,
     CommonModule,
     MatButtonModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatChipsModule,
   ],
   templateUrl: './tasks-list.component.html',
   styleUrl: './tasks-list.component.css'
 })
 export class TasksListComponent {
   displayedColumns: string[] = [
-    'position', 
-    'title', 
-    'description', 
-    'priority', 
-    'startDate', 
-    'endDate', 
-    'status', 
+    'position',
+    'title',
+    'description',
+    'priority',
+    'startDate',
+    'endDate',
+    'status',
     'assignedPerson',
     'actionsColumn'
   ];
@@ -44,7 +46,7 @@ export class TasksListComponent {
   constructor(
     private tasksService: TasksService,
     public dialog: MatDialog,
-  ) {}
+  ) { }
 
   @ViewChild(MatPaginator)
   paginator!: MatPaginator;
@@ -56,7 +58,18 @@ export class TasksListComponent {
   ngOnInit(): void {
     this.tasksService.tasksChanged.subscribe(result => {
       this.tasks = result;
-      this.dataSource = new MatTableDataSource<Task>(this.tasks);
+      this.dataSource = new MatTableDataSource<Task>(
+        this.tasks.map(task => {
+          return {
+            ...task,
+            userEmails: task?.users?.map(user => 
+              user?.email?.length > 15 
+                ? user?.email?.slice(0, 15) + '...' 
+                : user?.email
+            )
+          }
+        })
+      );
       this.dataSource.paginator = this.paginator;
     })
     this.tasksService.getTasks();
