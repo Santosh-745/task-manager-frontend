@@ -9,7 +9,11 @@
                 (click)="onClickProjects()"
             >
             <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="account_circle"></mat-icon>
-                <span id="user-email" class="nav-caption">{{userEmail}}</span>
+                <span 
+                    id="user-email" 
+                    class="nav-caption"
+                    [style.height]="userEmail.length > 20 ? '59%' : '45%'"
+                >{{userEmail}}</span>
             </div>
             <div 
                 mat-list-item 
