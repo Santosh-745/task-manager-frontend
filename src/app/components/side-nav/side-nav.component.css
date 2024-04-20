@@ -48,3 +48,10 @@ a:hover, a:active {
     width: 135px;
     overflow-wrap: break-word;
 }
+
+#line-breaker {
+    height: 2px;
+    background-color: #EAEFF5;
+    width: 174px;
+    margin: 5px 0;
+}
