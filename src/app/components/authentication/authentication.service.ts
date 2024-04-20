@@ -90,7 +90,7 @@ export class AuthenticationService {
     expiresIn: number
   ) {
     let expirationDate = new Date(expiresIn * 1000);
-    let user = new User(email, userId, token, expirationDate);
+    let user = new User(email, +userId, token, expirationDate);
     this.user.next(user);
     localStorage.setItem('userData', JSON.stringify(user));
   }

@@ -21,7 +21,7 @@ export class TasksService {
     startDate: undefined,
     endDate: undefined,
     status: "",
-    assignedPerson: "",
+    assignedPerson: [],
   };
   tasks: Task[] = [];
   tasksChanged = new BehaviorSubject<Task[]>([]);

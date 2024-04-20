@@ -30,7 +30,7 @@ export class CreateTaskComponent {
       startDate: undefined,
       endDate: undefined,
       status: "",
-      assignedPerson: "",
+      assignedPerson: [],
     });
     
     const dialogRef = this.dialog.open(ModalComponent, {
