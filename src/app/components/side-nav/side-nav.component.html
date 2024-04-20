@@ -5,6 +5,15 @@
             <div 
                 mat-list-item 
                 class="nav-item" 
+                style="background-color: #6cb149;"
+                (click)="onClickProjects()"
+            >
+            <mat-icon aria-hidden="false" aria-label="Example home icon" fontIcon="account_circle"></mat-icon>
+                <span id="user-email" class="nav-caption">{{userEmail}}</span>
+            </div>
+            <div 
+                mat-list-item 
+                class="nav-item" 
                 [style.background-color]="isClickedProjects ? 'gray' : 'initial'"
                 (click)="onClickProjects()"
             >

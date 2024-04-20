@@ -25,6 +25,7 @@ export class SideNavComponent {
   isClickedProjects: boolean = false;
   isClickedLogout: boolean = false;
   isAuth: boolean = false;
+  userEmail: string = '';
 
   constructor(
     private authService: AuthenticationService,
@@ -45,6 +46,7 @@ export class SideNavComponent {
     this.authService.user.subscribe(
       (user) => {
         this.isAuth = !!user;
+        this.userEmail = ((user?.email  as string)?.length > 20 ? user?.email?.slice(0, 20) + '...' : this.userEmail);
       }
     )
   }
