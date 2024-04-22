@@ -11,6 +11,7 @@ import { ModalComponent } from '../create-task/modal/modal.component';
 import { SideNavComponent } from '../side-nav/side-nav.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatChipsModule } from '@angular/material/chips';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tasks-list',
@@ -32,12 +33,12 @@ export class TasksListComponent {
   displayedColumns: string[] = [
     'position',
     'title',
-    'description',
+    // 'description',
     'priority',
     'startDate',
     'endDate',
     'status',
-    'assignedPerson',
+    // 'assignedPerson',
     'actionsColumn'
   ];
   tasks: Task[] = [];
@@ -46,6 +47,7 @@ export class TasksListComponent {
   constructor(
     private tasksService: TasksService,
     public dialog: MatDialog,
+    private route: Router,
   ) { }
 
   @ViewChild(MatPaginator)
@@ -94,5 +96,9 @@ export class TasksListComponent {
 
   onDelete(index: number) {
     this.tasksService.deleteTask(index);
+  }
+
+  onView(element: Task) {
+    this.route.navigate(['/tasks-list', element?.id])
   }
 }

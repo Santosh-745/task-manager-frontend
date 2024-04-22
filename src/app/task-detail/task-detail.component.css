@@ -1,0 +1,20 @@
+#header-container {
+    display: flex;
+    justify-content: flex-start;
+    margin: 41px 10px 0 0;
+    align-items: center;
+}
+
+#heading {
+    margin: 0 0 0 25px;
+    font-size: xx-large;
+}
+
+#main-container {
+    width: 85vw;
+    margin: 25px;
+    mat-list-item {
+        height: 60px;
+        margin: 10px 0;
+    }
+}

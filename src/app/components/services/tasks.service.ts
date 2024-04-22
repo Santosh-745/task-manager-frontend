@@ -73,4 +73,8 @@ export class TasksService {
   getUsers(){
     return this.http.get<any>('http://localhost:3000/auth/users');
   }
+
+  getTask(id: number) {
+    return this.http.get<any>(`http://localhost:3000/task/${id}`);
+  }
 }

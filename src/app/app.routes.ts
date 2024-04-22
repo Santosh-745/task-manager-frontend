@@ -3,6 +3,7 @@ import { AuthenticationComponent } from './components/authentication/authenticat
 import { TasksListComponent } from './components/tasks-list/tasks-list.component';
 import { AuthGuard } from './components/authentication/auth.guard';
 import { ProjectsListComponent } from './components/projects-list/projects-list.component';
+import { TaskDetailComponent } from './task-detail/task-detail.component';
 
 export const routes: Routes = [
     {
@@ -13,6 +14,11 @@ export const routes: Routes = [
         path: 'tasks-list',
         canActivate: [AuthGuard],
         component: TasksListComponent,
+    },
+    {
+        path: 'tasks-list/:id',
+        canActivate: [AuthGuard],
+        component: TaskDetailComponent,
     },
     {
         path: 'projects-list',
