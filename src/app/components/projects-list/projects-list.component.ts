@@ -48,31 +48,34 @@ export class ProjectsListComponent {
 
   ngOnInit(): void {
     this.projectsService.projectsChanged.subscribe(result => {
-      this.projects = result;
+      this.projects = result.map(project => ({
+        ...project,
+        ownerEmail: project?.owner?.email
+      }));
       this.dataSource = new MatTableDataSource<Project>(this.projects);
       this.dataSource.paginator = this.paginator;
     });
     this.projectsService.getProjects();
   }
 
-  openDialog(data: Project, index: number): void {
+  openDialog(data: Project, id: number): void {
     const dialogRef = this.dialog.open(ModalComponent, {
       data,
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.projectsService.editProject(result, index);
+        this.projectsService.editProject(result, +id);
       }
     });
   }
 
-  onEdit(project: Project, index: number) {
+  onEdit(project: Project, id: number) {
     this.projectsService.newProject.next(project);
-    this.openDialog(project, index);
+    this.openDialog(project, id);
   }
 
-  onDelete(index: number) {
-    this.projectsService.deleteProject(index);
+  onDelete(id: number) {
+    this.projectsService.deleteProject(id);
   }
 }

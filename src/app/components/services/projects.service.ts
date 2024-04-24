@@ -2,6 +2,12 @@ import { Injectable } from '@angular/core';
 import { Project } from '../projects-list/project.model';
 import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+
+interface CreateProjectResponse {
+  message: string;
+  response: Project;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -9,26 +15,27 @@ import { AuthenticationService } from '../authentication/authentication.service'
 export class ProjectsService {
 
   constructor(
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private http: HttpClient,
   ) { }
   projectsChanged = new BehaviorSubject<Project[]>([]);
   public defaultProject: Project = {
     title: "",
     startDate: undefined,
     endDate: undefined,
-    owner: "",
+    ownerEmail: "",
   };
   newProject = new BehaviorSubject<Project>(this.defaultProject);
   private projects: Project[] = [
     {
       title: 'Project 1',
       startDate: new Date(),
-      owner: 'User 1',
+      ownerEmail: 'User 1',
     },
     {
       title: 'Project 2',
       startDate: new Date(),
-      owner: 'User 1',
+      ownerEmail: 'User 1',
     }
   ];
 
@@ -37,46 +44,70 @@ export class ProjectsService {
   }
 
   getProjects() {
-    new Observable<Project[]>((observer) => {
-      observer.next(this.projects.slice());
-    }).pipe(
-      catchError(this.handleError)
-    ).subscribe((projects) => {
-      this.projectsChanged.next(projects);
-    })
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    const userId = userDetails['id'];
+    this.http
+      .get<Project[]>(
+        `http://localhost:3000/project/fetch-all/${userId}`,
+        {
+          headers: new HttpHeaders(`Authorization: Bearer ${token}`)
+        }
+      )
+      .pipe(
+        catchError(this.handleError)
+      ).subscribe((projects) => {
+        this.projectsChanged.next(projects);
+      })
   }
 
   addProject(project: Project) {
-    new Observable<Project>((observer) => {
-      observer.next(project);
-    }).pipe(
-      catchError(this.handleError)
-    ).subscribe((project) => {
-      const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');      
-      this.projects.push({ ...project, owner: userDetails.email });
-      this.getProjects();
-    })
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.http
+      .post<CreateProjectResponse>(
+        `http://localhost:3000/project/create`,
+        project,
+        {
+          headers: new HttpHeaders(`Authorization: Bearer ${token}`)
+        }
+      ).pipe(
+        catchError(this.handleError)
+      ).subscribe(({ response }) => {
+        this.getProjects();
+      })
   }
 
-  editProject(project: Project, index: number) {
-    new Observable<Project>((observer) => {
-      observer.next(project);
-    }).pipe(
-      catchError(this.handleError)
-    ).subscribe((project) => {
-      this.projects[index] = project;
-      this.getProjects();
-    })
+  editProject(project: Project, id: number) {
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.http
+      .patch<CreateProjectResponse>(
+        `http://localhost:3000/project/update/${id}`,
+        project,
+        {
+          headers: new HttpHeaders(`Authorization: Bearer ${token}`)
+        }
+      ).pipe(
+        catchError(this.handleError)
+      ).subscribe((project) => {
+        this.getProjects();
+      })
   }
 
-  deleteProject(index: number) {
-    new Observable<number>((observer) => {
-      observer.next(index);
-    }).pipe(
-      catchError(this.handleError)
-    ).subscribe((index) => {
-      this.projects.splice(index, 1);
-      this.getProjects();
-    })
+  deleteProject(id: number) {
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.http
+      .delete<CreateProjectResponse>(
+        `http://localhost:3000/project/delete/${id}`,
+        {
+          headers: new HttpHeaders(`Authorization: Bearer ${token}`)
+        }
+      ).pipe(
+        catchError(this.handleError)
+      ).subscribe(() => {
+        this.getProjects();
+      })
   }
 }

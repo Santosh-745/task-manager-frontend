@@ -13,6 +13,13 @@ export interface AuthResponseData {
   accessToken: string,
 }
 
+interface jwtPayload {
+  id: number,
+  email: string,
+  exp: number,
+  iat: number,
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -34,14 +41,34 @@ export class AuthenticationService {
   
 
   login(form: NgForm) {
-    return this.http.post<AuthResponseData>("http://localhost:3000/auth/login", form, this.httpOptions).pipe(
-      catchError(this.handleError)
+    return this.http.post<AuthResponseData>("http://localhost:3000/auth/login", form, this.httpOptions)
+    .pipe(
+      catchError(this.handleError),
+      tap((resData) => {
+        const data = jwtDecode<jwtPayload>(resData.accessToken);
+        this.handleAuthentication(
+          data.email,
+          data.id.toString(),
+          resData.accessToken,
+          +data.exp
+        );
+      })
     );
   }
 
   signup(form: NgForm) {
-    return this.http.post<AuthResponseData>("http://localhost:3000/auth/signup", form, this.httpOptions).pipe(
-      catchError(this.handleError)
+    return this.http.post<AuthResponseData>("http://localhost:3000/auth/signup", form, this.httpOptions)
+    .pipe(
+      catchError(this.handleError),
+      tap((resData) => {
+        const data = jwtDecode<jwtPayload>(resData.accessToken);
+        this.handleAuthentication(
+          data.email,
+          data.id.toString(),
+          resData.accessToken,
+          +data.exp
+        );
+      })
     );
   }
 

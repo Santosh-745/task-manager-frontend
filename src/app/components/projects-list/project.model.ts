@@ -1,6 +1,10 @@
+import { User } from "../authentication/user.model";
+
 export interface Project {
+    id?: number;
     title: string;
     startDate?: Date;
     endDate?: Date;
-    owner: string;
+    ownerEmail?: string;
+    owner?: User;
 }
