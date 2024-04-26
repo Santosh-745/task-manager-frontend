@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
-import { CreateTask, Task } from './task.model';
+import { Task } from './task.model';
 import { TasksService } from '../services/tasks.service';
 import { CreateTaskComponent } from '../create-task/create-task.component';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,9 @@ import { ModalComponent } from '../create-task/modal/modal.component';
 import { SideNavComponent } from '../side-nav/side-nav.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatChipsModule } from '@angular/material/chips';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Subscription, catchError, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-tasks-list',
@@ -41,11 +43,13 @@ export class TasksListComponent {
   ];
   tasks: Task[] = [];
   dataSource = new MatTableDataSource<Task>(this.tasks);
+  paramsSubscription: Subscription | undefined;
 
   constructor(
     private tasksService: TasksService,
     public dialog: MatDialog,
-    private route: Router,
+    private router: Router,
+    private route: ActivatedRoute,
   ) { }
 
   @ViewChild(MatPaginator)
@@ -55,13 +59,25 @@ export class TasksListComponent {
     this.dataSource.paginator = this.paginator;
   }
 
+
+  ngOnDestroy() {
+    this.paramsSubscription?.unsubscribe();
+  }
+
   ngOnInit(): void {
     this.tasksService.tasksChanged.subscribe(result => {
       this.tasks = result;
       this.dataSource = new MatTableDataSource<Task>(this.tasks);
       this.dataSource.paginator = this.paginator;
     })
-    this.tasksService.getTasks();
+    this.paramsSubscription = this.route.params
+      .subscribe((params: Params) => {
+        this.tasksService.getTasks(+params['id']);
+      })
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    return throwError(() => new Error(`Something went wrong: ${error.message}`));
   }
 
   openDialog(id: number): void {
@@ -71,7 +87,16 @@ export class TasksListComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.tasksService.editTask(result);
+        this.tasksService
+          .editTask(result)
+          .pipe(
+            catchError(this.handleError)
+          ).subscribe(() => {
+            this.route.params
+              .subscribe((params: Params) => {
+                this.tasksService.getTasks(+params['id']);
+              })
+          });
       }
     });
   }
@@ -85,10 +110,19 @@ export class TasksListComponent {
   }
 
   onDelete(id: number) {
-    this.tasksService.deleteTask(id);
+    this.tasksService
+      .deleteTask(id)
+      .pipe(
+        catchError(this.handleError)
+      ).subscribe(() => {
+        this.route.params
+          .subscribe((params: Params) => {
+            this.tasksService.getTasks(+params['id']);
+          })
+      });
   }
 
   onView(element: Task) {
-    this.route.navigate(['/task', element?.id])
+    this.router.navigate(['/task', element?.id])
   }
 }

@@ -42,4 +42,8 @@ export class TaskDetailComponent {
       })
   }
 
+  ngOnDestroy() {
+    this.paramsSubscription?.unsubscribe();
+  }
+
 }

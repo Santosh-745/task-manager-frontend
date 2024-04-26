@@ -10,6 +10,8 @@ import { CreateProjectComponent } from '../create-project/create-project.compone
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../create-project/create-project-modal/create-project-modal.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { TasksService } from '../services/tasks.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-projects-list',
@@ -27,7 +29,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrl: './projects-list.component.css'
 })
 export class ProjectsListComponent {
-  constructor(private projectsService: ProjectsService, private dialog: MatDialog) {}
+  constructor(
+    private projectsService: ProjectsService,
+    private dialog: MatDialog,
+    private router: Router
+  ) {}
   displayedColumns: string[] = [
     'position', 
     'title', 
@@ -80,5 +86,9 @@ export class ProjectsListComponent {
 
   onDelete(id: number) {
     this.projectsService.deleteProject(id);
+  }
+
+  viewTasks(id: number) {
+    this.router.navigate(['tasks-list', id]);
   }
 }

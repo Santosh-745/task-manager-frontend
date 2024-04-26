@@ -39,8 +39,8 @@ export class TasksService {
   newTask = new BehaviorSubject<CreateTask>(this.defaultTask);
   editTaskIndex = new BehaviorSubject<number>(-1);
 
-  getTasks() {
-    this.http.get<Tasks>(`${this.url}`, this.httpOptions)
+  getTasks(projectId: number) {
+    this.http.get<Tasks>(`${this.url}?projectId=${projectId}`, this.httpOptions)
       .pipe(catchError(this.handleError))
       .subscribe(result => {
         this.tasksChanged.next(result.tasks);
@@ -48,30 +48,20 @@ export class TasksService {
   }
   
   addTask(task: CreateTask) {
-    this.http.post<Task>(`${this.url}`, task, this.httpOptions)
-      .pipe(
-        catchError(this.handleError)
-      ).subscribe(() => {
-        this.getTasks();
-      });
+    return this.http.post<Task>(`${this.url}`, task, this.httpOptions)
+      // .pipe(
+      //   catchError(this.handleError)
+      // ).subscribe(() => {
+      //   // this.getTasks();
+      // });
   }
   
   editTask(task: Task) {
-    this.http.patch<Task>(`${this.url}`, task, this.httpOptions)
-      .pipe(
-        catchError(this.handleError)
-      ).subscribe(() => {
-        this.getTasks();
-      });
+    return this.http.patch<Task>(`${this.url}`, task, this.httpOptions)
   }
   
   deleteTask(id: number) {
-    this.http.delete(`${this.url}/${id}`, this.httpOptions)
-      .pipe(
-        catchError(this.handleError)
-      ).subscribe(() => {
-        this.getTasks();
-      });
+    return this.http.delete(`${this.url}/${id}`, this.httpOptions)
   }
 
   getUsers(){

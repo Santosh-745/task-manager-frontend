@@ -6,6 +6,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ModalComponent } from './modal/modal.component';
 import { TasksService } from '../services/tasks.service';
+import { catchError, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-task',
@@ -18,7 +21,12 @@ export class CreateTaskComponent {
   constructor(
     public dialog: MatDialog,
     private tasksService: TasksService,
+    private route: ActivatedRoute,
   ) {}
+
+  private handleError(error: HttpErrorResponse) {
+    return throwError(() => new Error(`Something went wrong: ${error.message}`));
+  }
 
   openDialog(): void {
     this.tasksService.newTask.next({
@@ -37,7 +45,19 @@ export class CreateTaskComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.tasksService.addTask(result);
+        this.route.params
+          .subscribe((params: Params) => {
+            this.tasksService
+              .addTask({
+                ...result,
+                projectId: +params['id'],
+              })
+              .pipe(
+                catchError(this.handleError)
+              ).subscribe(() => {
+                this.tasksService.getTasks(+params['id']);
+              });
+          })
       }
     });
   }

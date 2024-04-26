@@ -11,7 +11,7 @@ export const routes: Routes = [
         component: AuthenticationComponent
     },
     {
-        path: 'tasks-list',
+        path: 'tasks-list/:id',
         canActivate: [AuthGuard],
         component: TasksListComponent,
     },
