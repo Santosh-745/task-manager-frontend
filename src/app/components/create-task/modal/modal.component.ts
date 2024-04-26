@@ -12,7 +12,7 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { Task } from '../../tasks-list/task.model';
+import { CreateTask, Task } from '../../tasks-list/task.model';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TasksService } from '../../services/tasks.service';
@@ -41,22 +41,20 @@ import { NgFor } from '@angular/common';
 export class ModalComponent {
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Task,
+    @Inject(MAT_DIALOG_DATA) public data: CreateTask,
     private tasksService: TasksService,
     @Inject(MAT_DIALOG_DATA) public users: any,
   ) {}
 
   ngOnInit() {
-    this.users = this.tasksService.getUsers().subscribe(data => {
-      this.users = data.users;
-    });
+    this.tasksService.getUsers()
+      .subscribe((res) => {
+        this.users = res.users;
+      });
     
     this.tasksService.newTask
-      .subscribe((task: Task) => {
-        this.data = {
-          ...task,
-          assignedPerson: task?.users?.map(user => user?.id) as number[]
-        };
+      .subscribe((task: CreateTask) => {
+        this.data = task;
       })
   }
 

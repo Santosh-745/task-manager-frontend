@@ -42,7 +42,7 @@
     </mat-form-field>
     <mat-form-field>
         <mat-label>Assigned Person</mat-label>
-        <mat-select matInput [(ngModel)]="data.assignedPerson" multiple>
+        <mat-select matInput [(ngModel)]="data.userIds" multiple>
             <mat-option 
                 *ngFor="let user of users" 
                 [value]="user.id"

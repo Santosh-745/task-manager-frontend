@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
-import { Task } from './task.model';
+import { CreateTask, Task } from './task.model';
 import { TasksService } from '../services/tasks.service';
 import { CreateTaskComponent } from '../create-task/create-task.component';
 import { CommonModule } from '@angular/common';
@@ -33,12 +33,10 @@ export class TasksListComponent {
   displayedColumns: string[] = [
     'position',
     'title',
-    // 'description',
     'priority',
     'startDate',
     'endDate',
     'status',
-    // 'assignedPerson',
     'actionsColumn'
   ];
   tasks: Task[] = [];
@@ -60,45 +58,37 @@ export class TasksListComponent {
   ngOnInit(): void {
     this.tasksService.tasksChanged.subscribe(result => {
       this.tasks = result;
-      this.dataSource = new MatTableDataSource<Task>(
-        this.tasks.map(task => {
-          return {
-            ...task,
-            userEmails: task?.users?.map(user => 
-              user?.email?.length > 15 
-                ? user?.email?.slice(0, 15) + '...' 
-                : user?.email
-            )
-          }
-        })
-      );
+      this.dataSource = new MatTableDataSource<Task>(this.tasks);
       this.dataSource.paginator = this.paginator;
     })
     this.tasksService.getTasks();
   }
 
-  openDialog(data: Task, index: number): void {
+  openDialog(id: number): void {
     const dialogRef = this.dialog.open(ModalComponent, {
-      data,
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.tasksService.editTask(result, index);
+        this.tasksService.editTask(result);
       }
     });
   }
 
-  onEdit(element: Task, index: number) {
-    this.tasksService.newTask.next(element);
-    this.openDialog(element, index);
+  onEdit(element: Task, id: number) {
+    this.tasksService.newTask.next({
+      ...element,
+      userIds: element?.users?.map(user => user?.id) as number[]
+    });
+    this.openDialog(id);
   }
 
-  onDelete(index: number) {
-    this.tasksService.deleteTask(index);
+  onDelete(id: number) {
+    this.tasksService.deleteTask(id);
   }
 
   onView(element: Task) {
-    this.route.navigate(['/tasks-list', element?.id])
+    this.route.navigate(['/task', element?.id])
   }
 }

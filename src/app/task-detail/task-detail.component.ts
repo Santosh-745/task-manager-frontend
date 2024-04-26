@@ -33,10 +33,10 @@ export class TaskDetailComponent {
     this.paramsSubscription = this.route.params
       .subscribe((params: Params) => {
         this.id = +params['id'];
-        this.taskService.getTask(this.id).subscribe(response => {
+        this.taskService.getTask(this.id).subscribe(({ task }) => {
           this.task = {
-            ...response?.result,
-            userEmails: response?.result?.users?.map((user: User) => user?.email)
+            ...task,
+            userEmails: task?.users?.map((user: User) => user?.email)
           };
         });
       })

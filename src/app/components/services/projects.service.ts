@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Project } from '../projects-list/project.model';
-import { BehaviorSubject, Observable, catchError, map, throwError } from 'rxjs';
-import { AuthenticationService } from '../authentication/authentication.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { CreateProject, Project } from '../projects-list/project.model';
+import { BehaviorSubject, catchError, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 interface CreateProjectResponse {
   message: string;
@@ -13,47 +12,34 @@ interface CreateProjectResponse {
   providedIn: 'root'
 })
 export class ProjectsService {
+  httpOptions = {};
+  url='http://localhost:3000/project';
+  constructor(private http: HttpClient) {
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.httpOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    }
+  }
 
-  constructor(
-    private authService: AuthenticationService,
-    private http: HttpClient,
-  ) { }
   projectsChanged = new BehaviorSubject<Project[]>([]);
-  public defaultProject: Project = {
+  public defaultProject: CreateProject = {
     title: "",
     startDate: undefined,
     endDate: undefined,
-    ownerEmail: "",
   };
-  newProject = new BehaviorSubject<Project>(this.defaultProject);
-  private projects: Project[] = [
-    {
-      title: 'Project 1',
-      startDate: new Date(),
-      ownerEmail: 'User 1',
-    },
-    {
-      title: 'Project 2',
-      startDate: new Date(),
-      ownerEmail: 'User 1',
-    }
-  ];
+  newProject = new BehaviorSubject<CreateProject>(this.defaultProject);
 
   handleError(error: Error) {
     return throwError(() => new Error(error.message));
   }
 
   getProjects() {
-    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
-    const token = userDetails['_token'];
-    const userId = userDetails['id'];
     this.http
-      .get<Project[]>(
-        `http://localhost:3000/project/fetch-all/${userId}`,
-        {
-          headers: new HttpHeaders(`Authorization: Bearer ${token}`)
-        }
-      )
+      .get<Project[]>(`${this.url}`, this.httpOptions)
       .pipe(
         catchError(this.handleError)
       ).subscribe((projects) => {
@@ -61,50 +47,32 @@ export class ProjectsService {
       })
   }
 
-  addProject(project: Project) {
-    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
-    const token = userDetails['_token'];
+  addProject(project: CreateProject) {
     this.http
       .post<CreateProjectResponse>(
-        `http://localhost:3000/project/create`,
-        project,
-        {
-          headers: new HttpHeaders(`Authorization: Bearer ${token}`)
-        }
-      ).pipe(
+        `${this.url}`,project, this.httpOptions)
+      .pipe(
         catchError(this.handleError)
-      ).subscribe(({ response }) => {
+      ).subscribe(() => {
         this.getProjects();
       })
   }
 
   editProject(project: Project, id: number) {
-    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
-    const token = userDetails['_token'];
     this.http
       .patch<CreateProjectResponse>(
-        `http://localhost:3000/project/update/${id}`,
-        project,
-        {
-          headers: new HttpHeaders(`Authorization: Bearer ${token}`)
-        }
-      ).pipe(
+        `${this.url}/${id}`,project, this.httpOptions)
+      .pipe(
         catchError(this.handleError)
-      ).subscribe((project) => {
+      ).subscribe(() => {
         this.getProjects();
       })
   }
 
   deleteProject(id: number) {
-    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
-    const token = userDetails['_token'];
     this.http
-      .delete<CreateProjectResponse>(
-        `http://localhost:3000/project/delete/${id}`,
-        {
-          headers: new HttpHeaders(`Authorization: Bearer ${token}`)
-        }
-      ).pipe(
+      .delete<CreateProjectResponse>(`${this.url}/${id}`, this.httpOptions)
+      .pipe(
         catchError(this.handleError)
       ).subscribe(() => {
         this.getProjects();

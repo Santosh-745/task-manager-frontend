@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Project } from './project.model';
+import { CreateProject, Project } from './project.model';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ProjectsService } from '../services/projects.service';
@@ -58,9 +58,9 @@ export class ProjectsListComponent {
     this.projectsService.getProjects();
   }
 
-  openDialog(data: Project, id: number): void {
+  openDialog(id: number): void {
     const dialogRef = this.dialog.open(ModalComponent, {
-      data,
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -71,8 +71,11 @@ export class ProjectsListComponent {
   }
 
   onEdit(project: Project, id: number) {
-    this.projectsService.newProject.next(project);
-    this.openDialog(project, id);
+    this.projectsService.newProject.next({
+      ...project,
+      userIds: project?.users?.map(user => user?.id) as number[]
+    });
+    this.openDialog(id);
   }
 
   onDelete(id: number) {

@@ -5,7 +5,6 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ModalComponent } from './modal/modal.component';
-import { Task } from '../tasks-list/task.model';
 import { TasksService } from '../services/tasks.service';
 
 @Component({
@@ -20,7 +19,6 @@ export class CreateTaskComponent {
     public dialog: MatDialog,
     private tasksService: TasksService,
   ) {}
-  task: Task = this.tasksService.defaultTask;
 
   openDialog(): void {
     this.tasksService.newTask.next({
@@ -30,7 +28,7 @@ export class CreateTaskComponent {
       startDate: undefined,
       endDate: undefined,
       status: "",
-      assignedPerson: [],
+      userIds: [],
     });
     
     const dialogRef = this.dialog.open(ModalComponent, {

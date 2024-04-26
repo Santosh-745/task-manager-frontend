@@ -29,7 +29,6 @@ export class CreateProjectComponent {
       title: "",
       startDate: undefined,
       endDate: undefined,
-      ownerEmail: "",
     });
     const dialogRef = this.dialog.open(ModalComponent, {
       data: this.project,
