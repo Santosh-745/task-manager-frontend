@@ -39,6 +39,15 @@ export class ProjectsService {
   }
 
   getProjects() {
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.httpOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    }
+    console.log("========> getProjects: ");
     this.http
       .get<Project[]>(`${this.url}`, this.httpOptions)
       .pipe(

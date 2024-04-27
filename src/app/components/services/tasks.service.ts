@@ -39,6 +39,14 @@ export class TasksService {
   newTask = new BehaviorSubject<CreateTask>(this.defaultTask);
 
   getTasks(projectId: number) {
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.httpOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    }
     this.http.get<getTasksResponse>(`${this.url}?projectId=${projectId}`, this.httpOptions)
     .pipe(catchError(this.handleError))
     .subscribe(result => {
