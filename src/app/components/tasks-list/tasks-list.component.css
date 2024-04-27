@@ -5,6 +5,16 @@
     align-items: center;
 }
 
+#header-item-2 {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    mat-form-field {
+        width: 15vw;
+        margin-top: 15px;
+    }
+}
+
 #tasks-list-container {
     width: 86vw;
     margin-top: 25px;

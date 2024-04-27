@@ -32,7 +32,7 @@ export class CreateTaskComponent {
     this.tasksService.newTask.next({
       title: "",
       description: "",
-      priority: "",
+      priority: -1,
       startDate: undefined,
       endDate: undefined,
       status: "",

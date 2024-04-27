@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, catchError, throwError } from 'rxjs';
-import { CreateTask, Task , Tasks } from '../tasks-list/task.model';
+import { BehaviorSubject, catchError, throwError } from 'rxjs';
+import { CreateTask, Task , getTasksResponse } from '../tasks-list/task.model';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
 
@@ -28,7 +28,7 @@ export class TasksService {
   public defaultTask: CreateTask = {
     title: "",
     description: "",
-    priority: "",
+    priority: -1,
     startDate: undefined,
     endDate: undefined,
     status: "",
@@ -37,23 +37,17 @@ export class TasksService {
   tasks: Task[] = [];
   tasksChanged = new BehaviorSubject<Task[]>([]);
   newTask = new BehaviorSubject<CreateTask>(this.defaultTask);
-  editTaskIndex = new BehaviorSubject<number>(-1);
 
   getTasks(projectId: number) {
-    this.http.get<Tasks>(`${this.url}?projectId=${projectId}`, this.httpOptions)
-      .pipe(catchError(this.handleError))
-      .subscribe(result => {
-        this.tasksChanged.next(result.tasks);
-      });
+    this.http.get<getTasksResponse>(`${this.url}?projectId=${projectId}`, this.httpOptions)
+    .pipe(catchError(this.handleError))
+    .subscribe(result => {
+      this.tasksChanged.next(result.tasks);
+    });
   }
   
   addTask(task: CreateTask) {
     return this.http.post<Task>(`${this.url}`, task, this.httpOptions)
-      // .pipe(
-      //   catchError(this.handleError)
-      // ).subscribe(() => {
-      //   // this.getTasks();
-      // });
   }
   
   editTask(task: Task) {

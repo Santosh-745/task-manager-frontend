@@ -17,6 +17,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TasksService } from '../../services/tasks.service';
 import { NgFor } from '@angular/common';
+import { User } from '../../authentication/user.model';
 
 @Component({
   selector: 'app-modal',
@@ -43,9 +44,9 @@ export class ModalComponent {
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: CreateTask,
     private tasksService: TasksService,
-    @Inject(MAT_DIALOG_DATA) public users: any,
   ) {}
 
+  users: User[] = [];
   ngOnInit() {
     this.tasksService.getUsers()
       .subscribe((res) => {
@@ -56,6 +57,10 @@ export class ModalComponent {
       .subscribe((task: CreateTask) => {
         this.data = task;
       })
+  }
+
+  comparePriority(option: any, value: any): boolean {
+    return +option === +value;
   }
 
   onCancel(): void {

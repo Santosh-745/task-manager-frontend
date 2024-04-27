@@ -7,6 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
 import { User } from '../components/authentication/user.model';
 import { MatChipsModule } from '@angular/material/chips';
+import { TaskPriority } from '../constants/constants';
 
 @Component({
   selector: 'app-task-detail',
@@ -28,6 +29,7 @@ export class TaskDetailComponent {
   id: number = 0;
   paramsSubscription: Subscription | undefined;
   task: Task | null = null;
+  taskPriority = TaskPriority;
 
   ngOnInit(): void {  
     this.paramsSubscription = this.route.params

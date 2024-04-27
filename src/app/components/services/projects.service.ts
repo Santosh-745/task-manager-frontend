@@ -26,6 +26,7 @@ export class ProjectsService {
   }
 
   projectsChanged = new BehaviorSubject<Project[]>([]);
+  selectedProjectName = new BehaviorSubject<string>("");
   public defaultProject: CreateProject = {
     title: "",
     startDate: undefined,

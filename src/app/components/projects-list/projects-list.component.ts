@@ -88,7 +88,8 @@ export class ProjectsListComponent {
     this.projectsService.deleteProject(id);
   }
 
-  viewTasks(id: number) {
+  viewTasks(id: number, name: string) {
+    this.projectsService.selectedProjectName.next(name);
     this.router.navigate(['tasks-list', id]);
   }
 }

@@ -4,7 +4,7 @@ export interface Task {
     id?: number;
     title: string;
     description?: string;
-    priority: string;
+    priority: number;
     startDate?: Date;
     endDate?: Date;
     status: string;
@@ -12,15 +12,16 @@ export interface Task {
     userEmails?: string[];
 }
 
-export interface Tasks {
+export interface getTasksResponse {
     message: string;
     tasks: Task[];
+    count: number;
 }
 
 export interface CreateTask {
     title?: string;
     description?: string;
-    priority?: string;
+    priority?: number;
     startDate?: Date;
     endDate?: Date;
     status?: string;
