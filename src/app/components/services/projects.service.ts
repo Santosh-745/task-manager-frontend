@@ -47,7 +47,6 @@ export class ProjectsService {
         "Authorization": `Bearer ${token}`
       }
     }
-    console.log("========> getProjects: ");
     this.http
       .get<Project[]>(`${this.url}`, this.httpOptions)
       .pipe(
@@ -70,7 +69,7 @@ export class ProjectsService {
 
   editProject(project: Project, id: number) {
     this.http
-      .patch<CreateProjectResponse>(
+      .patch(
         `${this.url}/${id}`,project, this.httpOptions)
       .pipe(
         catchError(this.handleError)
@@ -81,11 +80,15 @@ export class ProjectsService {
 
   deleteProject(id: number) {
     this.http
-      .delete<CreateProjectResponse>(`${this.url}/${id}`, this.httpOptions)
+      .delete(`${this.url}/${id}`, this.httpOptions)
       .pipe(
         catchError(this.handleError)
       ).subscribe(() => {
         this.getProjects();
       })
+  }
+
+  getProject(id: number) {
+    return this.http.get<{project: Project}>(`${this.url}/${id}`, this.httpOptions)
   }
 }

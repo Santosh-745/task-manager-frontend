@@ -92,4 +92,8 @@ export class ProjectsListComponent {
     this.projectsService.selectedProjectName.next(name);
     this.router.navigate(['tasks-list', id]);
   }
+
+  viewDetails(id: number) {
+    this.router.navigate(['project', id]);
+  }
 }

@@ -45,18 +45,25 @@
                 </button>&nbsp;
                 <button 
                     mat-flat-button 
+                    color="primary"
+                    (click)="viewTasks(element.id, element.title)"
+                >
+                    Tasks
+                </button>&nbsp;
+                <button 
+                    mat-flat-button 
+                    color="primary"
+                    (click)="viewDetails(element.id)"
+                >
+                    View Details
+                </button>&nbsp;
+                <button 
+                    mat-flat-button 
                     color="warn"
                     (click)="onDelete(element.id)"
                 >
                     Delete
                 </button>&nbsp;
-                <button 
-                    mat-flat-button 
-                    color="primary"
-                    (click)="viewTasks(element.id, element.title)"
-                >
-                    Tasks
-                </button>
             </td>
         </ng-container>
 
