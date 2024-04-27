@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Project } from './project.model';
+import { CreateProject, Project } from './project.model';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { ProjectsService } from '../services/projects.service';
@@ -10,6 +10,8 @@ import { CreateProjectComponent } from '../create-project/create-project.compone
 import { MatDialog } from '@angular/material/dialog';
 import { ModalComponent } from '../create-project/create-project-modal/create-project-modal.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { TasksService } from '../services/tasks.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-projects-list',
@@ -27,7 +29,11 @@ import { MatToolbarModule } from '@angular/material/toolbar';
   styleUrl: './projects-list.component.css'
 })
 export class ProjectsListComponent {
-  constructor(private projectsService: ProjectsService, private dialog: MatDialog) {}
+  constructor(
+    private projectsService: ProjectsService,
+    private dialog: MatDialog,
+    private router: Router
+  ) {}
   displayedColumns: string[] = [
     'position', 
     'title', 
@@ -48,31 +54,46 @@ export class ProjectsListComponent {
 
   ngOnInit(): void {
     this.projectsService.projectsChanged.subscribe(result => {
-      this.projects = result;
+      this.projects = result.map(project => ({
+        ...project,
+        ownerEmail: project?.owner?.email
+      }));
       this.dataSource = new MatTableDataSource<Project>(this.projects);
       this.dataSource.paginator = this.paginator;
     });
     this.projectsService.getProjects();
   }
 
-  openDialog(data: Project, index: number): void {
+  openDialog(id: number): void {
     const dialogRef = this.dialog.open(ModalComponent, {
-      data,
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.projectsService.editProject(result, index);
+        this.projectsService.editProject(result, +id);
       }
     });
   }
 
-  onEdit(project: Project, index: number) {
-    this.projectsService.newProject.next(project);
-    this.openDialog(project, index);
+  onEdit(project: Project, id: number) {
+    this.projectsService.newProject.next({
+      ...project,
+      userIds: project?.users?.map(user => user?.id) as number[]
+    });
+    this.openDialog(id);
   }
 
-  onDelete(index: number) {
-    this.projectsService.deleteProject(index);
+  onDelete(id: number) {
+    this.projectsService.deleteProject(id);
+  }
+
+  viewTasks(id: number, name: string) {
+    this.projectsService.selectedProjectName.next(name);
+    this.router.navigate(['tasks-list', id]);
+  }
+
+  viewDetails(id: number) {
+    this.router.navigate(['project', id]);
   }
 }

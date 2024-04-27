@@ -8,12 +8,9 @@
     padding-left: 0;
 }
 
-#buttons-container {
-    margin-top: 25px;
-}
-
 #date-container {
     display: flex;
     justify-content: flex-start;
     gap: 50px;
+    margin-bottom: 15px;
 }

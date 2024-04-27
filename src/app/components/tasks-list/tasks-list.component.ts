@@ -11,6 +11,14 @@ import { ModalComponent } from '../create-task/modal/modal.component';
 import { SideNavComponent } from '../side-nav/side-nav.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatChipsModule } from '@angular/material/chips';
+import { ActivatedRoute, Params, Router } from '@angular/router';
+import { Subscription, catchError, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { TaskPriority } from '../../constants/constants';
+import { ProjectsService } from '../services/projects.service';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-tasks-list',
@@ -24,6 +32,9 @@ import { MatChipsModule } from '@angular/material/chips';
     MatButtonModule,
     MatToolbarModule,
     MatChipsModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule
   ],
   templateUrl: './tasks-list.component.html',
   styleUrl: './tasks-list.component.css'
@@ -32,67 +43,114 @@ export class TasksListComponent {
   displayedColumns: string[] = [
     'position',
     'title',
-    'description',
     'priority',
     'startDate',
     'endDate',
     'status',
-    'assignedPerson',
     'actionsColumn'
   ];
   tasks: Task[] = [];
   dataSource = new MatTableDataSource<Task>(this.tasks);
+  paramsSubscription: Subscription | undefined;
+  taskPriority = TaskPriority;
+  project: string = "";
 
   constructor(
     private tasksService: TasksService,
     public dialog: MatDialog,
-  ) { }
+    private router: Router,
+    private route: ActivatedRoute,
+    private projectService: ProjectsService,
+  ) {}
 
-  @ViewChild(MatPaginator)
-  paginator!: MatPaginator;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  /** Function to implement server side sorting*/
+  // onSort(sortEvent: Event) {
+  //   console.log("============> sort event: ", sortEvent);
+  // }
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.paramsSubscription = this.route.params
+      .subscribe((params: Params) => {
+        this.tasksService.getTasks(+params['id']);
+      });
+    /** Logic to implement server side sorting*/
+    // this.sort.sortChange.subscribe(this.onSort);
+  }
+
+  ngOnDestroy() {
+    this.paramsSubscription?.unsubscribe();
   }
 
   ngOnInit(): void {
     this.tasksService.tasksChanged.subscribe(result => {
       this.tasks = result;
-      this.dataSource = new MatTableDataSource<Task>(
-        this.tasks.map(task => {
-          return {
-            ...task,
-            userEmails: task?.users?.map(user => 
-              user?.email?.length > 15 
-                ? user?.email?.slice(0, 15) + '...' 
-                : user?.email
-            )
-          }
-        })
-      );
+      this.dataSource = new MatTableDataSource<Task>(this.tasks);
       this.dataSource.paginator = this.paginator;
-    })
-    this.tasksService.getTasks();
+      this.dataSource.sort = this.sort;
+    });
+    this.projectService.selectedProjectName
+      .subscribe(projectName => {
+        this.project = projectName;
+      });
   }
 
-  openDialog(data: Task, index: number): void {
+  private handleError(error: HttpErrorResponse) {
+    return throwError(() => new Error(`Something went wrong: ${error.message}`));
+  }
+
+  openDialog(id: number): void {
     const dialogRef = this.dialog.open(ModalComponent, {
-      data,
+      data: {},
     });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.tasksService.editTask(result, index);
+        this.tasksService
+          .editTask(result)
+          .pipe(
+            catchError(this.handleError)
+          ).subscribe(() => {
+            this.route.params
+              .subscribe((params: Params) => {
+                this.tasksService.getTasks(+params['id']);
+              })
+          });
       }
     });
   }
 
-  onEdit(element: Task, index: number) {
-    this.tasksService.newTask.next(element);
-    this.openDialog(element, index);
+  onEdit(element: Task, id: number) {
+    this.tasksService.newTask.next({
+      ...element,
+      userIds: element?.users?.map(user => user?.id) as number[]
+    });
+    this.openDialog(id);
   }
 
-  onDelete(index: number) {
-    this.tasksService.deleteTask(index);
+  onDelete(id: number) {
+    this.tasksService
+      .deleteTask(id)
+      .pipe(
+        catchError(this.handleError)
+      ).subscribe(() => {
+        this.route.params
+          .subscribe((params: Params) => {
+            this.tasksService.getTasks(+params['id']);
+          })
+      });
+  }
+
+  onView(element: Task) {
+    this.router.navigate(['/task', element?.id])
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 }

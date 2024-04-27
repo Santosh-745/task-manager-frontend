@@ -21,7 +21,6 @@ import { SidenavService } from '../../services/sidenav.service';
 })
 export class SideNavComponent {
 
-  isClickedTasks: boolean = false;
   isClickedProjects: boolean = false;
   isClickedLogout: boolean = false;
   isAuth: boolean = false;
@@ -34,9 +33,6 @@ export class SideNavComponent {
   ) {}
 
   ngOnInit() {
-    this.sidenavService.isClickedTasks.subscribe(flag => {
-      this.isClickedTasks = flag;
-    });
     this.sidenavService.isClickedProjects.subscribe(flag => {
       this.isClickedProjects = flag;
     });
@@ -52,22 +48,13 @@ export class SideNavComponent {
     )
   }
 
-  onClickTasks = () => {
-    this.isClickedProjects = false;
-    this.isClickedTasks = true;
-    this.isClickedLogout = false;
-    this.route.navigate(['/tasks-list']);
-  };
-
   onClickProjects = () => {
     this.isClickedProjects = true;
-    this.isClickedTasks = false;
     this.isClickedLogout = false;
     this.route.navigate(['/projects-list']);
   };
 
   onLogout = () => {
-    this.isClickedTasks = false;
     this.isClickedProjects = false;
     this.isClickedLogout = true;
     this.authService.logout();

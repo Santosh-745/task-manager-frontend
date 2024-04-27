@@ -10,10 +10,10 @@
     </mat-form-field>
     <mat-form-field>
         <mat-label>Priority</mat-label>
-        <mat-select matInput [(ngModel)]="data.priority">
-            <mat-option value="Low">Low</mat-option>
-            <mat-option value="Medium">Medium</mat-option>
-            <mat-option value="High">High</mat-option>
+        <mat-select matInput [(ngModel)]="data.priority" [compareWith]="comparePriority">
+            <mat-option value="3">Low</mat-option>
+            <mat-option value="2">Medium</mat-option>
+            <mat-option value="1">High</mat-option>
         </mat-select>
     </mat-form-field>
     <div id="date-container">
@@ -42,7 +42,7 @@
     </mat-form-field>
     <mat-form-field>
         <mat-label>Assigned Person</mat-label>
-        <mat-select matInput [(ngModel)]="data.assignedPerson" multiple>
+        <mat-select matInput [(ngModel)]="data.userIds" multiple>
             <mat-option 
                 *ngFor="let user of users" 
                 [value]="user.id"

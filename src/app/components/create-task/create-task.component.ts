@@ -5,8 +5,10 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { ModalComponent } from './modal/modal.component';
-import { Task } from '../tasks-list/task.model';
 import { TasksService } from '../services/tasks.service';
+import { catchError, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-task',
@@ -19,18 +21,22 @@ export class CreateTaskComponent {
   constructor(
     public dialog: MatDialog,
     private tasksService: TasksService,
+    private route: ActivatedRoute,
   ) {}
-  task: Task = this.tasksService.defaultTask;
+
+  private handleError(error: HttpErrorResponse) {
+    return throwError(() => new Error(`Something went wrong: ${error.message}`));
+  }
 
   openDialog(): void {
     this.tasksService.newTask.next({
       title: "",
       description: "",
-      priority: "",
+      priority: -1,
       startDate: undefined,
       endDate: undefined,
       status: "",
-      assignedPerson: [],
+      userIds: [],
     });
     
     const dialogRef = this.dialog.open(ModalComponent, {
@@ -39,7 +45,19 @@ export class CreateTaskComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        this.tasksService.addTask(result);
+        this.route.params
+          .subscribe((params: Params) => {
+            this.tasksService
+              .addTask({
+                ...result,
+                projectId: +params['id'],
+              })
+              .pipe(
+                catchError(this.handleError)
+              ).subscribe(() => {
+                this.tasksService.getTasks(+params['id']);
+              });
+          })
       }
     });
   }

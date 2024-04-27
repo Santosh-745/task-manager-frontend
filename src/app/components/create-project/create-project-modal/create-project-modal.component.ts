@@ -17,7 +17,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TasksService } from '../../services/tasks.service';
 import { NgFor } from '@angular/common';
 import { ProjectsService } from '../../services/projects.service';
-import { Project } from '../../projects-list/project.model';
+import { CreateProject, Project } from '../../projects-list/project.model';
 
 @Component({
   selector: 'app-modal',
@@ -42,19 +42,20 @@ import { Project } from '../../projects-list/project.model';
 export class ModalComponent {
   constructor(
     public dialogRef: MatDialogRef<ModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: Project,
+    @Inject(MAT_DIALOG_DATA) public data: CreateProject,
     private taskService: TasksService,
     private projectService: ProjectsService,
     @Inject(MAT_DIALOG_DATA) public users: any,
   ) {}
 
   ngOnInit() {
-    this.users = this.taskService.getUsers().subscribe(data => {
-      this.users = data.users;
-    });
+    this.users = this.taskService.getUsers()
+      .subscribe((res) => {
+        this.users = res.users;
+      });
     
     this.projectService.newProject
-      .subscribe((project: Project) => {
+      .subscribe((project: CreateProject) => {
         this.data = project;
       })
   }
