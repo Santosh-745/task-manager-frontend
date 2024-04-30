@@ -3,7 +3,6 @@ import { BehaviorSubject, catchError, throwError } from 'rxjs';
 import { CreateTask, Task , getTasksResponse } from '../tasks-list/task.model';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -38,7 +37,7 @@ export class TasksService {
   tasksChanged = new BehaviorSubject<Task[]>([]);
   newTask = new BehaviorSubject<CreateTask>(this.defaultTask);
 
-  getTasks(projectId: number) {
+  getTasks(projectId: number, queryParams?: string) {
     const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
     const token = userDetails['_token'];
     this.httpOptions = {
@@ -47,7 +46,11 @@ export class TasksService {
         "Authorization": `Bearer ${token}`
       }
     }
-    this.http.get<getTasksResponse>(`${this.url}?projectId=${projectId}`, this.httpOptions)
+    let url = `${this.url}?projectId=${projectId}`;
+    if (queryParams) {
+      url += `&${queryParams}`;
+    }
+    this.http.get<getTasksResponse>(url, this.httpOptions)
     .pipe(catchError(this.handleError))
     .subscribe(result => {
       this.tasksChanged.next(result.tasks);
