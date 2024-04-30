@@ -19,6 +19,8 @@ import { ProjectsService } from '../services/projects.service';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-tasks-list',
@@ -34,7 +36,9 @@ import { MatInputModule } from '@angular/material/input';
     MatChipsModule,
     MatSortModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    MatSelectModule,
+    FormsModule
   ],
   templateUrl: './tasks-list.component.html',
   styleUrl: './tasks-list.component.css'
@@ -54,6 +58,7 @@ export class TasksListComponent {
   paramsSubscription: Subscription | undefined;
   taskPriority = TaskPriority;
   project: string = "";
+  filter: string = "";
 
   constructor(
     private tasksService: TasksService,
@@ -117,7 +122,13 @@ export class TasksListComponent {
           ).subscribe(() => {
             this.route.params
               .subscribe((params: Params) => {
-                this.tasksService.getTasks(+params['id']);
+                let queryParams = "";
+                if (this.filter === "my-tasks") {
+                  queryParams = "myTasks=true";
+                } else if (this.filter) {
+                  queryParams = `status=${this.filter}`;
+                }
+                this.tasksService.getTasks(+params['id'], queryParams);
               })
           });
       }
@@ -140,7 +151,13 @@ export class TasksListComponent {
       ).subscribe(() => {
         this.route.params
           .subscribe((params: Params) => {
-            this.tasksService.getTasks(+params['id']);
+            let queryParams = "";
+            if (this.filter === "my-tasks") {
+              queryParams = "myTasks=true";
+            } else if (this.filter) {
+              queryParams = `status=${this.filter}`;
+            }
+            this.tasksService.getTasks(+params['id'], queryParams);
           })
       });
   }
@@ -152,5 +169,18 @@ export class TasksListComponent {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  onFilterSelected() {
+    let queryParams: string = "";
+    if (this.filter === "my-tasks") {
+      queryParams = "myTasks=true";
+    } else if (this.filter) {
+      queryParams = `status=${this.filter}`;
+    }
+    this.route.params
+      .subscribe((params: Params) => {
+        this.tasksService.getTasks(+params['id'], queryParams);
+      })
   }
 }
