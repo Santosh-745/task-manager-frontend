@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable } from 'rxjs';
 import { jwtDecode } from 'jwt-decode';
 import { SidenavService } from '../../services/sidenav.service';
@@ -43,6 +44,7 @@ export class AuthenticationComponent {
     private router: Router,
     private authService: AuthenticationService,
     private sidenavService: SidenavService,
+    private _snackBar: MatSnackBar,
   ) {}
 
   onSwitchMode() {
@@ -71,7 +73,9 @@ export class AuthenticationComponent {
         form.reset();
       },
       error: (errorMsg) => {
-        this.error = errorMsg;
+        this._snackBar.open(errorMsg, 'Close', {
+          panelClass: ['error'],
+        });
       },
     });
   }
