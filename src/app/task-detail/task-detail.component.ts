@@ -9,6 +9,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { TaskPriority } from '../constants/constants';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
+import moment from 'moment';
 
 @Component({
   selector: 'app-task-detail',
@@ -51,8 +52,8 @@ export class TaskDetailComponent {
           this.dataSource[0]["value"] = `${task?.title}`;
           this.dataSource[1]["value"] = task?.description;
           this.dataSource[2]["value"] = task?.priority;
-          this.dataSource[3]["value"] = task?.startDate;
-          this.dataSource[4]["value"] = task?.endDate;
+          this.dataSource[3]["value"] = moment(task?.startDate).format('YYYY-MM-DD HH:mm:ss');
+          this.dataSource[4]["value"] = moment(task?.endDate).format('YYYY-MM-DD HH:mm:ss');
           this.dataSource[5]["value"] = task?.status;
           this.dataSource[6]["value"] = task?.users?.map((user: User) => user?.email)
         });
