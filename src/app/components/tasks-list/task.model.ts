@@ -5,8 +5,8 @@ export interface Task {
     title: string;
     description?: string;
     priority: number;
-    startDate?: Date;
-    endDate?: Date;
+    startDate?: Date | string;
+    endDate?: Date | string;
     status: string;
     users?: User[];
     userEmails?: string[];
@@ -22,8 +22,10 @@ export interface CreateTask {
     title?: string;
     description?: string;
     priority?: number;
-    startDate?: Date;
-    endDate?: Date;
+    startDate?: Date | string;
+    endDate?: Date | string;
     status?: string;
     userIds: number[];
+    startTime?: string;
+    endTime?: string;
 }

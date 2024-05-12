@@ -8,6 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
+import moment from 'moment';
 
 @Component({
   selector: 'app-project-detail',
@@ -46,8 +47,8 @@ export class ProjectDetailComponent {
         this.projectService.getProject(this.id).subscribe(({project}) => {
           this.dataSource[0]["value"] = `${project?.title}`;
           this.dataSource[1]["value"] = project?.owner?.email;
-          this.dataSource[2]["value"] = project?.startDate;
-          this.dataSource[3]["value"] = project?.endDate;
+          this.dataSource[2]["value"] = moment(project?.startDate).format('YYYY-MM-DD HH:mm:ss');
+          this.dataSource[3]["value"] = moment(project?.endDate).format('YYYY-MM-DD HH:mm:ss');
           this.dataSource[4]["value"] = project?.users?.map((user: User) => user?.email)
         });
       })

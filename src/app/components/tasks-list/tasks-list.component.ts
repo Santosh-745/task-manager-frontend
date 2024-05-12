@@ -21,6 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { FormsModule } from '@angular/forms';
+import moment from 'moment';
 
 @Component({
   selector: 'app-tasks-list',
@@ -115,8 +116,26 @@ export class TasksListComponent {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        const startDateTime = moment(result?.startDate)
+          .set({
+            hour: parseInt(result?.startTime?.split(':')[0]),
+            minute: parseInt(result?.startTime?.split(':')[1]),
+            second: 0,
+            millisecond: 0
+          });
+        const endDateTime = moment(result?.endDate)
+          .set({
+            hour: parseInt(result?.endTime?.split(':')[0]),
+            minute: parseInt(result?.endTime?.split(':')[1]),
+            second: 0,
+            millisecond: 0
+          });
         this.tasksService
-          .editTask(result)
+          .editTask({
+            ...result,
+            startDate: startDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+            endDate: endDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+          })
           .pipe(
             catchError(this.handleError)
           ).subscribe(() => {
@@ -136,9 +155,13 @@ export class TasksListComponent {
   }
 
   onEdit(element: Task, id: number) {
+    const startTime = moment(element.startDate).local().format('HH:mm');
+    const endTime = moment(element.endDate).local().format('HH:mm');
     this.tasksService.newTask.next({
       ...element,
-      userIds: element?.users?.map(user => user?.id) as number[]
+      userIds: element?.users?.map(user => user?.id) as number[],
+      startTime,
+      endTime,
     });
     this.openDialog(id);
   }

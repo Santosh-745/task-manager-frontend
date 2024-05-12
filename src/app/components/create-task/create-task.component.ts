@@ -9,6 +9,7 @@ import { TasksService } from '../services/tasks.service';
 import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Params, Router } from '@angular/router';
+import moment from 'moment';
 
 @Component({
   selector: 'app-create-task',
@@ -47,10 +48,26 @@ export class CreateTaskComponent {
       if (result) {
         this.route.params
           .subscribe((params: Params) => {
+            const startDateTime = moment(result?.startDate)
+              .set({
+                hour: parseInt(result?.startTime?.split(':')[0]),
+                minute: parseInt(result?.startTime?.split(':')[1]),
+                second: 0,
+                millisecond: 0
+              });
+            const endDateTime = moment(result?.endDate)
+              .set({
+                hour: parseInt(result?.endTime?.split(':')[0]),
+                minute: parseInt(result?.endTime?.split(':')[1]),
+                second: 0,
+                millisecond: 0
+              });
             this.tasksService
               .addTask({
                 ...result,
                 projectId: +params['id'],
+                startDate: startDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+                endDate: endDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
               })
               .pipe(
                 catchError(this.handleError)
