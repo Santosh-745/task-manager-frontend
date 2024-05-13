@@ -11,25 +11,50 @@
 
 #date-container {
     display: flex;
-    justify-content: space-between;
-    gap: 40px;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 10px;
     margin-bottom: 15px;
 }
 
 .date-field {
-    width: 300px;
+    width: 70%;
+}
+
+.time-field-container {
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+}
+.time-field-container > span {
+    font-size: small;
 }
 
 .time-field {
     height: 55px;
-    width: 80px;
-    border: none;
-    border-bottom: 1px solid black;
-    background-color: #efeded;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    border-radius: 5px 5px 0px 0px;
     padding: 0px 10px;
+    
+    border: none;
+    border-bottom: 1px solid gray;
+    background-color: #f5f5f5;
+}
+
+.time-field:hover {
+    border-bottom: 1px solid black;
+    background-color: #ececec;
+}
+
+.time-field:focus-visible {
+    border: none;
+    outline: 0px;
+    border-bottom: 2px solid #3f51b5;
+    background-color: #ececec;
 }
 
 .date-time-container {
     display: flex;
+    flex-basis: 100%;
     gap: 10px;
 }
