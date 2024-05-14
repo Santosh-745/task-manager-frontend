@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,6 +11,7 @@ import { catchError, throwError } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import moment from 'moment';
+import { log } from 'console';
 
 @Component({
   selector: 'app-create-task',
@@ -23,10 +25,12 @@ export class CreateTaskComponent {
     public dialog: MatDialog,
     private tasksService: TasksService,
     private route: ActivatedRoute,
+    private _snackBar: MatSnackBar,
   ) {}
 
   private handleError(error: HttpErrorResponse) {
-    return throwError(() => new Error(`Something went wrong: ${error.message}`));
+    console.log("from handle error callback ::",error);
+    return throwError(() => new Error(`Something went wrong: ${error.error.message}`));
   }
 
   openDialog(): void {
@@ -71,8 +75,16 @@ export class CreateTaskComponent {
               })
               .pipe(
                 catchError(this.handleError)
-              ).subscribe(() => {
-                this.tasksService.getTasks(+params['id']);
+              ).subscribe( {
+                next: () => {
+                  this.tasksService.getTasks(+params['id']);
+                },
+                error: (error) => {
+                  console.log(error);
+                  this._snackBar.open(error.message, 'Close', {
+                    panelClass: ['error'],
+                  });
+                }
               });
           })
       }
