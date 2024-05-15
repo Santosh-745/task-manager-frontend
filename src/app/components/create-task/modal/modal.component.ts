@@ -18,6 +18,11 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { TasksService } from '../../services/tasks.service';
 import { NgFor } from '@angular/common';
 import { User } from '../../authentication/user.model';
+import { ActivatedRoute, Params } from '@angular/router';
+import moment from 'moment';
+import { HttpErrorResponse } from '@angular/common/http';
+import { catchError, throwError } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-modal',
@@ -44,9 +49,12 @@ export class ModalComponent {
     public dialogRef: MatDialogRef<ModalComponent>,
     @Inject(MAT_DIALOG_DATA) public data: CreateTask,
     private tasksService: TasksService,
+    private route: ActivatedRoute,
+    private _snackBar: MatSnackBar,
   ) {}
 
   users: User[] = [];
+
   ngOnInit() {
     this.tasksService.getUsers()
       .subscribe((res) => {
@@ -61,6 +69,50 @@ export class ModalComponent {
 
   comparePriority(option: any, value: any): boolean {
     return +option === +value;
+  }
+
+  onSubmit(): void {
+    let result : any = this.data;
+      this.route.params
+      .subscribe((params: Params) => {
+        const startDateTime = moment(result?.startDate)
+        .set({
+          hour: parseInt(result?.startTime?.split(':')[0]),
+          minute: parseInt(result?.startTime?.split(':')[1]),
+          second: 0,
+          millisecond: 0
+        });
+        const endDateTime = moment(result?.endDate)
+        .set({
+          hour: parseInt(result?.endTime?.split(':')[0]),
+          minute: parseInt(result?.endTime?.split(':')[1]),
+          second: 0,
+          millisecond: 0
+        });
+        this.tasksService
+        .addTask({
+          ...result,
+              projectId: +params['id'],
+              startDate: startDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+              endDate: endDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
+            })
+            .pipe(
+              catchError((error: HttpErrorResponse) => {
+                return throwError(() => new Error(error.error.data[0].msg));
+              })
+            ).subscribe( {
+              next: () => {
+                this.tasksService.getTasks(+params['id']);
+                this.dialogRef.close(this.data);
+              },
+              error: (error) => {
+                console.log(error);
+                this._snackBar.open(error, 'Close', {
+                  panelClass: ['error'],
+                });
+              }
+            });
+          });
   }
 
   onCancel(): void {

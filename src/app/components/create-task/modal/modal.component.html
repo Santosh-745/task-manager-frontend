@@ -76,5 +76,5 @@
     </mat-form-field>
     <mat-dialog-actions>
         <button mat-button (click)="onCancel()">Cancel</button>
-        <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Submit</button>
+        <button mat-button (click)="onSubmit()" cdkFocusInitial>Submit</button>
     </mat-dialog-actions>
