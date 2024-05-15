@@ -73,6 +73,10 @@ export class TasksService {
     return this.http.get<any>('http://localhost:3000/auth/users', this.httpOptions);
   }
 
+  getProjectUsers(id: number){
+    return this.http.get<any>('http://localhost:3000/project/users/'+id, this.httpOptions);
+  }
+
   getTask(id: number) {
     return this.http.get<any>(`${this.url}/${id}`, this.httpOptions);
   }
