@@ -12,6 +12,9 @@ import { ModalComponent } from '../create-project/create-project-modal/create-pr
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TasksService } from '../services/tasks.service';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-projects-list',
@@ -32,7 +35,8 @@ export class ProjectsListComponent {
   constructor(
     private projectsService: ProjectsService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    private _snackBar: MatSnackBar
   ) {}
   displayedColumns: string[] = [
     'position', 
@@ -85,7 +89,22 @@ export class ProjectsListComponent {
   }
 
   onDelete(id: number) {
-    this.projectsService.deleteProject(id);
+    this.projectsService.deleteProject(id).pipe(
+      catchError((error: HttpErrorResponse) => {        
+        console.log(error);
+            
+        return throwError(() => new Error(error.error.message));
+      })
+    ).subscribe({
+      next: () => {
+        this.projectsService.getProjects();
+      },
+      error: (error) => {
+        this._snackBar.open(error, 'Close', {
+          panelClass: ['error'],
+        });
+      },
+    });
   }
 
   viewTasks(id: number, name: string) {

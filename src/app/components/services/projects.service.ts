@@ -61,11 +61,6 @@ export class ProjectsService {
     return this.http
       .post<CreateProjectResponse>(
         `${this.url}`,project, this.httpOptions)
-      // .pipe(
-      //   catchError(this.handleError)
-      // ).subscribe(() => {
-      //   this.getProjects();
-      // })
   }
 
   editProject(project: Project, id: number) {
@@ -96,13 +91,8 @@ export class ProjectsService {
         "Authorization": `Bearer ${token}`
       }
     }
-    this.http
+    return this.http
       .delete(`${this.url}/${id}`, this.httpOptions)
-      .pipe(
-        catchError(this.handleError)
-      ).subscribe(() => {
-        this.getProjects();
-      })
   }
 
   getProject(id: number) {
