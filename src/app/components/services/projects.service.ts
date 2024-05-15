@@ -15,14 +15,7 @@ export class ProjectsService {
   httpOptions = {};
   url='http://localhost:3000/project';
   constructor(private http: HttpClient) {
-    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
-    const token = userDetails['_token'];
-    this.httpOptions = {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
-      }
-    }
+    
   }
 
   projectsChanged = new BehaviorSubject<Project[]>([]);
@@ -57,17 +50,33 @@ export class ProjectsService {
   }
 
   addProject(project: CreateProject) {
-    this.http
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.httpOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    }
+    return this.http
       .post<CreateProjectResponse>(
         `${this.url}`,project, this.httpOptions)
-      .pipe(
-        catchError(this.handleError)
-      ).subscribe(() => {
-        this.getProjects();
-      })
+      // .pipe(
+      //   catchError(this.handleError)
+      // ).subscribe(() => {
+      //   this.getProjects();
+      // })
   }
 
   editProject(project: Project, id: number) {
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.httpOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    }
     this.http
       .patch(
         `${this.url}/${id}`,project, this.httpOptions)
@@ -79,6 +88,14 @@ export class ProjectsService {
   }
 
   deleteProject(id: number) {
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.httpOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    }
     this.http
       .delete(`${this.url}/${id}`, this.httpOptions)
       .pipe(
@@ -89,6 +106,14 @@ export class ProjectsService {
   }
 
   getProject(id: number) {
+    const userDetails = JSON.parse(localStorage.getItem('userData') || '{}');
+    const token = userDetails['_token'];
+    this.httpOptions = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      }
+    }
     return this.http.get<{project: Project}>(`${this.url}/${id}`, this.httpOptions)
   }
 }

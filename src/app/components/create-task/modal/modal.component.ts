@@ -62,7 +62,8 @@ export class ModalComponent {
       });
 
     this.tasksService.newTask.subscribe((task: CreateTask) => {
-      this.data = task;
+      const projectId = this.data.projectId;
+      this.data = {...task, projectId: projectId};
     });
   }
 
@@ -72,6 +73,8 @@ export class ModalComponent {
   
   onSubmit(): void {
     let result: any = this.data;
+    console.log(this.data);
+    
     this.route.params.subscribe((params: Params) => {
       const startDateTime = moment(result?.startDate).set({
         hour: parseInt(result?.startTime?.split(':')[0]),
@@ -88,7 +91,6 @@ export class ModalComponent {
       this.tasksService
         .addTask({
           ...result,
-          projectId: +params['id'],
           startDate: startDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
           endDate: endDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
         })
@@ -99,11 +101,9 @@ export class ModalComponent {
         )
         .subscribe({
           next: () => {
-            this.tasksService.getTasks(+params['id']);
             this.dialogRef.close(this.data);
           },
           error: (error) => {
-            console.log(error);
             this._snackBar.open(error, 'Close', {
               panelClass: ['error'],
             });

@@ -7,6 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { FormsModule } from '@angular/forms';
+import { catchError, throwError } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-create-project',
@@ -34,10 +36,8 @@ export class CreateProjectComponent {
       data: this.project,
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        this.projectsService.addProject(result);
-      }
+    dialogRef.afterClosed().subscribe(() => {
+      this.projectsService.getProjects();
     });
   }
 }
