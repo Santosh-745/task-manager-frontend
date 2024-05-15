@@ -39,10 +39,10 @@ import moment from 'moment';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    FormsModule
+    FormsModule,
   ],
   templateUrl: './tasks-list.component.html',
-  styleUrl: './tasks-list.component.css'
+  styleUrl: './tasks-list.component.css',
 })
 export class TasksListComponent {
   displayedColumns: string[] = [
@@ -52,21 +52,21 @@ export class TasksListComponent {
     'startDate',
     'endDate',
     'status',
-    'actionsColumn'
+    'actionsColumn',
   ];
   tasks: Task[] = [];
   dataSource = new MatTableDataSource<Task>(this.tasks);
   paramsSubscription: Subscription | undefined;
   taskPriority = TaskPriority;
-  project: string = "";
-  filter: string = "";
+  project: string = '';
+  filter: string = '';
 
   constructor(
     private tasksService: TasksService,
     public dialog: MatDialog,
     private router: Router,
     private route: ActivatedRoute,
-    private projectService: ProjectsService,
+    private projectService: ProjectsService
   ) {}
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -80,10 +80,9 @@ export class TasksListComponent {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-    this.paramsSubscription = this.route.params
-      .subscribe((params: Params) => {
-        this.tasksService.getTasks(+params['id']);
-      });
+    this.paramsSubscription = this.route.params.subscribe((params: Params) => {
+      this.tasksService.getTasks(+params['id']);
+    });
     /** Logic to implement server side sorting*/
     // this.sort.sortChange.subscribe(this.onSort);
   }
@@ -93,64 +92,41 @@ export class TasksListComponent {
   }
 
   ngOnInit(): void {
-    this.tasksService.tasksChanged.subscribe(result => {
+    this.tasksService.tasksChanged.subscribe((result) => {
       this.tasks = result;
       this.dataSource = new MatTableDataSource<Task>(this.tasks);
       this.dataSource.paginator = this.paginator;
       this.dataSource.sort = this.sort;
     });
-    this.projectService.selectedProjectName
-      .subscribe(projectName => {
-        this.project = projectName;
-      });
+    this.projectService.selectedProjectName.subscribe((projectName) => {
+      this.project = projectName;
+    });
   }
 
   private handleError(error: HttpErrorResponse) {
-    return throwError(() => new Error(`Something went wrong: ${error.message}`));
+    return throwError(
+      () => new Error(`Something went wrong: ${error.message}`)
+    );
   }
 
   openDialog(id: number): void {
-    const dialogRef = this.dialog.open(ModalComponent, {
-      data: {},
-    });
+    this.route.params.subscribe((params: Params) => {
+      const dialogRef = this.dialog.open(ModalComponent, {
+        data: {
+          projectId: +params['id'],
+          isEdit: true,
+        },
+      });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        const startDateTime = moment(result?.startDate)
-          .set({
-            hour: parseInt(result?.startTime?.split(':')[0]),
-            minute: parseInt(result?.startTime?.split(':')[1]),
-            second: 0,
-            millisecond: 0
-          });
-        const endDateTime = moment(result?.endDate)
-          .set({
-            hour: parseInt(result?.endTime?.split(':')[0]),
-            minute: parseInt(result?.endTime?.split(':')[1]),
-            second: 0,
-            millisecond: 0
-          });
-        this.tasksService
-          .editTask({
-            ...result,
-            startDate: startDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
-            endDate: endDateTime.utc().format('YYYY-MM-DDTHH:mm:ss') + 'Z',
-          })
-          .pipe(
-            catchError(this.handleError)
-          ).subscribe(() => {
-            this.route.params
-              .subscribe((params: Params) => {
-                let queryParams = "";
-                if (this.filter === "my-tasks") {
-                  queryParams = "myTasks=true";
-                } else if (this.filter) {
-                  queryParams = `status=${this.filter}`;
-                }
-                this.tasksService.getTasks(+params['id'], queryParams);
-              })
-          });
-      }
+      dialogRef.afterClosed().subscribe(() => {
+        let queryParams = '';
+        if (this.filter === 'my-tasks') {
+          queryParams = 'myTasks=true';
+        } else if (this.filter) {
+          queryParams = `status=${this.filter}`;
+        }
+        this.tasksService.getTasks(+params['id'], queryParams);
+      });
     });
   }
 
@@ -159,7 +135,7 @@ export class TasksListComponent {
     const endTime = moment(element.endDate).local().format('HH:mm');
     this.tasksService.newTask.next({
       ...element,
-      userIds: element?.users?.map(user => user?.id) as number[],
+      userIds: element?.users?.map((user) => user?.id) as number[],
       startTime,
       endTime,
     });
@@ -169,24 +145,22 @@ export class TasksListComponent {
   onDelete(id: number) {
     this.tasksService
       .deleteTask(id)
-      .pipe(
-        catchError(this.handleError)
-      ).subscribe(() => {
-        this.route.params
-          .subscribe((params: Params) => {
-            let queryParams = "";
-            if (this.filter === "my-tasks") {
-              queryParams = "myTasks=true";
-            } else if (this.filter) {
-              queryParams = `status=${this.filter}`;
-            }
-            this.tasksService.getTasks(+params['id'], queryParams);
-          })
+      .pipe(catchError(this.handleError))
+      .subscribe(() => {
+        this.route.params.subscribe((params: Params) => {
+          let queryParams = '';
+          if (this.filter === 'my-tasks') {
+            queryParams = 'myTasks=true';
+          } else if (this.filter) {
+            queryParams = `status=${this.filter}`;
+          }
+          this.tasksService.getTasks(+params['id'], queryParams);
+        });
       });
   }
 
   onView(element: Task) {
-    this.router.navigate(['/task', element?.id])
+    this.router.navigate(['/task', element?.id]);
   }
 
   applyFilter(event: Event) {
@@ -195,15 +169,14 @@ export class TasksListComponent {
   }
 
   onFilterSelected() {
-    let queryParams: string = "";
-    if (this.filter === "my-tasks") {
-      queryParams = "myTasks=true";
+    let queryParams: string = '';
+    if (this.filter === 'my-tasks') {
+      queryParams = 'myTasks=true';
     } else if (this.filter) {
       queryParams = `status=${this.filter}`;
     }
-    this.route.params
-      .subscribe((params: Params) => {
-        this.tasksService.getTasks(+params['id'], queryParams);
-      })
+    this.route.params.subscribe((params: Params) => {
+      this.tasksService.getTasks(+params['id'], queryParams);
+    });
   }
 }

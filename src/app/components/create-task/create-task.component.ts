@@ -34,6 +34,7 @@ export class CreateTaskComponent {
     });
 
     this.route.params.subscribe((params : Params) => {
+      ;
       const dialogRef = this.dialog.open(ModalComponent, {
         data: {
           projectId: +params["id"]
